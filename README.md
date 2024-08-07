@@ -11,11 +11,12 @@
 
 <div id="ref1"></div> 
 
-[1] [A Baseline for Detecting Misclassified and Out-of-Distribution Examples in Neural Networks](https://arxiv.org/pdf/1610.02136)
+[1] ![Static Badge](https://img.shields.io/badge/ICLR-2017-deep)
+  [A Baseline for Detecting Misclassified and Out-of-Distribution Examples in Neural Networks](https://arxiv.org/pdf/1610.02136)
 
 <div id="ref2"></div> 
 
-[2] [A Baseline for Detecting Misclassified and Out-of-Distribution Examples in Neural Networks](https://arxiv.org/pdf/1610.02136)
+[2] [Enhancing The Reliability of Out-of-distribution Image Detection in Neural Networks](https://arxiv.org/pdf/1706.02690)
 
 <div id="ref4"></div>
 
