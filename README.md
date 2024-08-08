@@ -2,13 +2,18 @@
 
 | OOD Method | Description | Publication | Ref |
 |-------|-------|-------| -------|
-| MSP | - | ![Static Badge](https://img.shields.io/badge/2017-ICLR-4bb2ff?style=for-the-badge) | [[1]](#ref1) |
-| ODIN | - | ![Static Badge](https://img.shields.io/badge/2018-ICLR-4bb2ff?style=for-the-badge) | [[2]](#ref2) |
-| Mahalanobis | - | ![Static Badge](https://img.shields.io/badge/2018-NeurIPS-8A2BE2?style=for-the-badge) | [[3]](#ref2) |
-| Energy | - | ![Static Badge](https://img.shields.io/badge/2020-NeurIPS-8A2BE2?style=for-the-badge) | [[4]](#ref4) |
-| GradNorm | - | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) | [[4]](#ref4) |
+| CORES | - | ![Static Badge](https://img.shields.io/badge/2024-CVPR-brightgreen?style=for-the-badge) | [[4]](#ref4) |
+| NAP | - | ![Static Badge](https://img.shields.io/badge/2023-CVPR-brightgreen?style=for-the-badge) | [[4]](#ref4) |
+| NAP | - | ![Static Badge](https://img.shields.io/badge/2023-ICML-orange?style=for-the-badge) | [[4]](#ref4) |
+| NAP | - | ![Static Badge](https://img.shields.io/badge/2023-ICCV-red?style=for-the-badge) | [[4]](#ref4) |
+| NAP | - | ![Static Badge](https://img.shields.io/badge/2023-AAAI-pink?style=for-the-badge) | [[4]](#ref4) |
 | ReAct | - | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) | [[4]](#ref4) |
-| NAP | - | ![Static Badge](https://img.shields.io/badge/2023-CVPR-8A2BE2?style=for-the-badge) | [[4]](#ref4) |
+| GradNorm | - | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) | [[4]](#ref4) |
+| Energy | - | ![Static Badge](https://img.shields.io/badge/2020-NeurIPS-8A2BE2?style=for-the-badge) | [[4]](#ref4) |
+| Mahalanobis | - | ![Static Badge](https://img.shields.io/badge/2018-NeurIPS-8A2BE2?style=for-the-badge) | [[3]](#ref2) |
+| ODIN | - | ![Static Badge](https://img.shields.io/badge/2018-ICLR-4bb2ff?style=for-the-badge) | [[2]](#ref2) |
+| MSP | - | ![Static Badge](https://img.shields.io/badge/2017-ICLR-4bb2ff?style=for-the-badge) | [[1]](#ref1) |
+
 
 # References
 
