@@ -45,7 +45,7 @@ def get_train_options():
 
     parser.add_argument("--dataset", type=str, default="cifar10")
     parser.add_argument("--model", type=str, default="DenseNet")
-    parser.add_argument("--gpu", type=int, default=0)
+    parser.add_argument("--gpu", type=int, default=1)
 
     parser.add_argument("--random_seed", type=int, default=0)
     parser.add_argument("--epoch", type=int, default=100)
