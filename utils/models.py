@@ -1,5 +1,6 @@
 import torch
-from models.resnet import *
+from models.ResNet import *
+from models.DenseNet import *
 
 
 def get_model(args):
@@ -7,6 +8,9 @@ def get_model(args):
 
     if args.model == "resnet":
         model = resnet18(num_classes=args.num_classes)
+
+    elif args.model == "DenseNet":
+        model = DenseNet(growthRate=12, depth=100, reduction=0.5, bottleneck=True, nClasses=args.num_classes)
 
     return model
 

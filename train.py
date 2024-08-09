@@ -13,10 +13,10 @@ def get_train_options():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--dataset", type=str, default="cifar10")
-    parser.add_argument("--model", type=str, default="resnet")
+    parser.add_argument("--model", type=str, default="DenseNet")
     parser.add_argument("--gpu", type=int, default=0)
 
-    parser.add_argument("--random_seed", type=int, default=0)
+    parser.add_argument("--random_seed", type=int, default=2)
     parser.add_argument("--epoch", type=int, default=200)
     parser.add_argument("--bs", type=int, default=128)
     parser.add_argument("--lr", type=float, default=0.1)
