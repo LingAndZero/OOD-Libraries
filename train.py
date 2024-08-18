@@ -44,14 +44,14 @@ def get_train_options():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--dataset", type=str, default="cifar10")
-    parser.add_argument("--model", type=str, default="DenseNet")
-    parser.add_argument("--gpu", type=int, default=1)
+    parser.add_argument("--model", type=str, default="ResNet")
+    parser.add_argument("--gpu", type=int, default=0)
 
     parser.add_argument("--random_seed", type=int, default=0)
     parser.add_argument("--epoch", type=int, default=100)
-    parser.add_argument("--bs", type=int, default=64)
+    parser.add_argument("--bs", type=int, default=128)
     parser.add_argument("--lr", type=float, default=0.1)
-    parser.add_argument("--weight_decay", type=float, default=1e-4)
+    parser.add_argument("--weight_decay", type=float, default=5e-4)
     parser.add_argument("--momentum", type=float, default=0.9)
     parser.add_argument('--num_classes', type=int, default=10)
 
@@ -86,13 +86,12 @@ if __name__ == '__main__':
     device = torch.device('cuda:{}'.format(args.gpu) if torch.cuda.is_available() and args.gpu != -1 else 'cpu')
 
     train_dataset, test_dataset = get_dataset(args.dataset)
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.bs, shuffle=True, num_workers=2)
-    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.bs, shuffle=False, num_workers=2)
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.bs, shuffle=True, pin_memory=True, num_workers=4)
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.bs, shuffle=False, pin_memory=True, num_workers=4)
 
     model = get_model(args).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
-    # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
     scheduler = MultiStepLR(optimizer, milestones=[50, 75, 90], gamma=0.1)
 
     for epoch in tqdm(range(args.epoch)):
