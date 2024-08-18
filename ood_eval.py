@@ -5,6 +5,9 @@ import numpy as np
 
 from ood_methods.MSP import msp_eval
 from ood_methods.Energy import energy_eval
+from ood_methods.ODIN import odin_eval
+from ood_methods.Mahalanobis import mahalanobis_eval
+from ood_methods.ReAct import react_eval, get_threshold
 
 from utils.utils import fix_random_seed
 from utils.dataset import get_dataset
@@ -16,13 +19,13 @@ def get_eval_options():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--ind_dataset", type=str, default="ImageNet")
-    parser.add_argument("--ood_dataset", type=str, default="iNat")
+    parser.add_argument("--ood_dataset", type=str, default="Places")
     parser.add_argument("--model", type=str, default="ResNet")
     parser.add_argument("--gpu", type=int, default=0)
 
     parser.add_argument("--random_seed", type=int, default=0)
     parser.add_argument("--bs", type=int, default=128)
-    parser.add_argument("--OOD_method", type=str, default="Energy")
+    parser.add_argument("--OOD_method", type=str, default="ReAct")
 
     parser.add_argument('--num_classes', type=int, default=1000)
 
@@ -52,6 +55,20 @@ if __name__ == '__main__':
     elif args.OOD_method == "Energy":
         ind_scores = energy_eval(model, ind_loader)
         ood_scores = energy_eval(model, ood_loader)
+    elif args.OOD_method == "ODIN":
+        ind_scores = odin_eval(model, ind_loader)
+        ood_scores = odin_eval(model, ood_loader)
+    elif args.OOD_method == "Mahalanobis":
+        ind_scores = mahalanobis_eval(model, ind_loader)
+        ood_scores = mahalanobis_eval(model, ood_loader)
+    elif args.OOD_method == "ReAct":
+        train_data, _ = get_dataset(args.ind_dataset)
+        train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, shuffle=False)
+        threshold = get_threshold(model, train_loader, 90)
+        with open('result/threshold.txt', 'w') as f:
+            f.write(threshold)
+        ind_scores = react_eval(model, ind_loader, threshold)
+        ood_scores = react_eval(model, ood_loader, threshold)
 
     ind_labels = np.ones(ind_scores.shape[0])
     ood_labels = np.zeros(ood_scores.shape[0])

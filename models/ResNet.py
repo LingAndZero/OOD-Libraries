@@ -251,6 +251,21 @@ class AbstractResNet(nn.Module):
         x = self.fc(x)
         return x
 
+    def compute_threshold(self, x):
+        x = self.features(x)
+        x = self.avgpool(x)
+        x = x.view(x.size(0), -1)
+        return x
+
+    def forward_threshold(self, x, threshold=1e10):
+        x = self.features(x)
+        x = self.avgpool(x)
+        x = x.clip(max=threshold)
+        x = x.view(x.size(0), -1)
+        x = self.fc(x)
+        return x
+    
+
     def load_state_dict(self, state_dict, strict=True):
         missing_keys = []
         unexpected_keys = []
@@ -302,23 +317,6 @@ class ResNet(AbstractResNet):
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
         return self.fc(x)
-
-    def ash_forward(self, x):
-        x = self.features(x)
-        x = self.avgpool(x)
-        x = ash_b(x)
-        x = x.view(x.size(0), -1)
-        x = self.fc(x)
-        return x
-    
-    def forward_threshold(self, x, threshold=1e10):
-        x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
-        x = self.layer4(self.layer3(self.layer2(self.layer1(x))))
-        x = self.avgpool(x)
-        x = x.clip(max=threshold)
-        x = x.view(x.size(0), -1)
-        x = self.fc(x)
-        return x
 
     def feature_list(self, x):
         out_list = []
