@@ -25,20 +25,24 @@
 
 <div id="odin"></div> 
 
-2. [Enhancing The Reliability of Out-of-distribution Image Detection in Neural Networks.](https://arxiv.org/pdf/1706.02690) [[Code]](https://github.com/facebookresearch/odin)
+1. [Enhancing The Reliability of Out-of-distribution Image Detection in Neural Networks.](https://arxiv.org/pdf/1706.02690) [[Code]](https://github.com/facebookresearch/odin)
+
+<div id="maha"></div> 
+
+3. [A Simple Unified Framework for Detecting Out-of-Distribution Samples and Adversarial Attacks.](https://arxiv.org/pdf/1807.03888) [[Code]](https://github.com/pokaxpoka/deep_Mahalanobis_detector)
 
 <div id="energy"></div>
 
-[4] [Energy-based Out-of-distribution Detection.](https://arxiv.org/pdf/2010.03759) [[Code]](https://github.com/wetliu/energy_ood)
+4. [Energy-based Out-of-distribution Detection.](https://arxiv.org/pdf/2010.03759) [[Code]](https://github.com/wetliu/energy_ood)
 
 <div id="gradnorm"></div>
 
-[5] [On the Importance of Gradients for Detecting Distributional Shifts in the Wild.](https://arxiv.org/pdf/2110.00218) [[Code]](https://github.com/deeplearning-wisc/gradnorm_ood)
+5. [On the Importance of Gradients for Detecting Distributional Shifts in the Wild.](https://arxiv.org/pdf/2110.00218) [[Code]](https://github.com/deeplearning-wisc/gradnorm_ood)
 
 <div id="react"></div> 
 
-[6] [ReAct: Out-of-distribution Detection With Rectified Activations.](https://arxiv.org/pdf/2111.12797) [[Code]](https://github.com/deeplearning-wisc/react)
+6. [ReAct: Out-of-distribution Detection With Rectified Activations.](https://arxiv.org/pdf/2111.12797) [[Code]](https://github.com/deeplearning-wisc/react)
 
 <div id="nap"></div> 
 
-[7] [Detection of Out-of-Distribution Samples Using Binary Neuron Activation Patterns.](https://openaccess.thecvf.com/content/CVPR2023/papers/Olber_Detection_of_Out-of-Distribution_Samples_Using_Binary_Neuron_Activation_Patterns_CVPR_2023_paper.pdf) [[Code]](https://github.com/safednn-group/nap-ood)
+7. [Detection of Out-of-Distribution Samples Using Binary Neuron Activation Patterns.](https://openaccess.thecvf.com/content/CVPR2023/papers/Olber_Detection_of_Out-of-Distribution_Samples_Using_Binary_Neuron_Activation_Patterns_CVPR_2023_paper.pdf) [[Code]](https://github.com/safednn-group/nap-ood)
