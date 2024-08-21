@@ -1,20 +1,33 @@
 # OOD-Libraries
 
-| OOD Method | Implement | Publication |
-|-------|-------|-------|
-| CORES | - | ![Static Badge](https://img.shields.io/badge/2024-CVPR-brightgreen?style=for-the-badge) |
-| [NAP](#nap) | - | ![Static Badge](https://img.shields.io/badge/2023-CVPR-brightgreen?style=for-the-badge) |
-| [KNN](#knn) | - | ![Static Badge](https://img.shields.io/badge/2022-ICML-orange?style=for-the-badge) |
-| [DICE](#dice) | - | ![Static Badge](https://img.shields.io/badge/2022-ECCV-pink?style=for-the-badge) |
-| [ReAct](#react) | [ReAct.py](ood_methods/ReAct.py) | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) |
-| [GradNorm](#gradnorm) | - | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) |
-| [Energy](#energy) | [Energy.py](ood_methods/Energy.py) | ![Static Badge](https://img.shields.io/badge/2020-NeurIPS-8A2BE2?style=for-the-badge) |
-| [Mahalanobis](#maha) | [Mahalanobis.py](ood_methods/Mahalanobis.py) | ![Static Badge](https://img.shields.io/badge/2018-NeurIPS-8A2BE2?style=for-the-badge) |
-| [ODIN](#odin) | [ODIN.py](ood_methods/ODIN.py) | ![Static Badge](https://img.shields.io/badge/2018-ICLR-4bb2ff?style=for-the-badge) |
-| [MSP](#msp) | [MSP.py](ood_methods/MSP.py) | ![Static Badge](https://img.shields.io/badge/2017-ICLR-4bb2ff?style=for-the-badge) |
+## OOD Detection
+
+| OOD Method | Description | Implement | Publication |
+|:-------:|-------|-------|-------|
+| CORES | - | - | ![Static Badge](https://img.shields.io/badge/2024-CVPR-brightgreen?style=for-the-badge) |
+| [NAP](#nap) | - | - | ![Static Badge](https://img.shields.io/badge/2023-CVPR-brightgreen?style=for-the-badge) |
+| [KNN](#knn) | - | - | ![Static Badge](https://img.shields.io/badge/2022-ICML-orange?style=for-the-badge) |
+| [DICE](#dice) | - | - | ![Static Badge](https://img.shields.io/badge/2022-ECCV-pink?style=for-the-badge) |
+| [ReAct](#react) | - | [ReAct.py](ood_methods/ReAct.py) | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) |
+| [GradNorm](#gradnorm) | - | - | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) |
+| [Energy](#energy) | - | [Energy.py](ood_methods/Energy.py) | ![Static Badge](https://img.shields.io/badge/2020-NeurIPS-8A2BE2?style=for-the-badge) |
+| [Mahalanobis](#maha) | - | [Mahalanobis.py](ood_methods/Mahalanobis.py) | ![Static Badge](https://img.shields.io/badge/2018-NeurIPS-8A2BE2?style=for-the-badge) |
+| [ODIN](#odin) | - | [ODIN.py](ood_methods/ODIN.py) | ![Static Badge](https://img.shields.io/badge/2018-ICLR-4bb2ff?style=for-the-badge) |
+| [MSP](#msp) | - | [MSP.py](ood_methods/MSP.py) | ![Static Badge](https://img.shields.io/badge/2017-ICLR-4bb2ff?style=for-the-badge) |
 
 
-# References
+## Datasets
+
+###  
+
+### large-scale datasets
+ImageNet-1000
+iNaturalist
+SUN
+Places
+Texture
+
+## References
 
 <div id="msp"></div> 
 
