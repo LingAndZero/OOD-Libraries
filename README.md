@@ -1,10 +1,10 @@
 # OOD-Libraries
 
-| OOD Method | Description | Publication | Ref |
+| OOD Method | Implement | Publication | Ref |
 |-------|-------|-------| -------|
 | CORES | - | ![Static Badge](https://img.shields.io/badge/2024-CVPR-brightgreen?style=for-the-badge) | [[4]](#ref4) |
 | NAP | - | ![Static Badge](https://img.shields.io/badge/2023-CVPR-brightgreen?style=for-the-badge) | [[4]](#ref4) |
-| NAP | - | ![Static Badge](https://img.shields.io/badge/2023-ICML-orange?style=for-the-badge) | [[4]](#ref4) |
+| DICE | - | ![Static Badge](https://img.shields.io/badge/2023-ICML-orange?style=for-the-badge) | [[4]](#ref4) |
 | NAP | - | ![Static Badge](https://img.shields.io/badge/2023-ICCV-red?style=for-the-badge) | [[4]](#ref4) |
 | NAP | - | ![Static Badge](https://img.shields.io/badge/2023-AAAI-pink?style=for-the-badge) | [[4]](#ref4) |
 | ReAct | - | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) | [[4]](#ref4) |
