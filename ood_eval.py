@@ -66,7 +66,7 @@ if __name__ == '__main__':
         train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, shuffle=False)
         threshold = get_threshold(model, train_loader, 90)
         with open('result/threshold.txt', 'w') as f:
-            f.write(threshold)
+            f.write(str(threshold))
         ind_scores = react_eval(model, ind_loader, threshold)
         ood_scores = react_eval(model, ood_loader, threshold)
 
