@@ -1,38 +1,44 @@
 # OOD-Libraries
 
-| OOD Method | Implement | Publication | Ref |
-|-------|-------|-------| -------|
-| CORES | - | ![Static Badge](https://img.shields.io/badge/2024-CVPR-brightgreen?style=for-the-badge) | [[4]](#ref4) |
-| NAP | - | ![Static Badge](https://img.shields.io/badge/2023-CVPR-brightgreen?style=for-the-badge) | [[4]](#ref4) |
-| DICE | - | ![Static Badge](https://img.shields.io/badge/2023-ICML-orange?style=for-the-badge) | [[4]](#ref4) |
-| NAP | - | ![Static Badge](https://img.shields.io/badge/2023-ICCV-red?style=for-the-badge) | [[4]](#ref4) |
-| NAP | - | ![Static Badge](https://img.shields.io/badge/2023-AAAI-pink?style=for-the-badge) | [[4]](#ref4) |
-| ReAct | - | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) | [[4]](#ref4) |
-| GradNorm | - | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) | [[4]](#ref4) |
-| Energy | - | ![Static Badge](https://img.shields.io/badge/2020-NeurIPS-8A2BE2?style=for-the-badge) | [[4]](#ref4) |
-| Mahalanobis | - | ![Static Badge](https://img.shields.io/badge/2018-NeurIPS-8A2BE2?style=for-the-badge) | [[3]](#ref2) |
-| ODIN | - | ![Static Badge](https://img.shields.io/badge/2018-ICLR-4bb2ff?style=for-the-badge) | [[2]](#ref2) |
-| MSP | - | ![Static Badge](https://img.shields.io/badge/2017-ICLR-4bb2ff?style=for-the-badge) | [[1]](#ref1) |
+| OOD Method | Implement | Publication |
+|-------|-------|-------|
+| CORES | - | ![Static Badge](https://img.shields.io/badge/2024-CVPR-brightgreen?style=for-the-badge) |
+| [NAP](#nap) | - | ![Static Badge](https://img.shields.io/badge/2023-CVPR-brightgreen?style=for-the-badge) |
+| DICE | - | ![Static Badge](https://img.shields.io/badge/2023-ICML-orange?style=for-the-badge) |
+| NAP | - | ![Static Badge](https://img.shields.io/badge/2023-ICCV-red?style=for-the-badge) |
+| NAP | - | ![Static Badge](https://img.shields.io/badge/2023-AAAI-pink?style=for-the-badge) |
+| [ReAct](#react) | [ReAct.py](ood_methods/ReAct.py) | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) |
+| [GradNorm](#gradnorm) | - | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) |
+| [Energy](#energy) | [Energy.py](ood_methods/Energy.py) | ![Static Badge](https://img.shields.io/badge/2020-NeurIPS-8A2BE2?style=for-the-badge) |
+| [Mahalanobis](#maha) | [Mahalanobis.py](ood_methods/Mahalanobis.py) | ![Static Badge](https://img.shields.io/badge/2018-NeurIPS-8A2BE2?style=for-the-badge) |
+| [ODIN](#odin) | [ODIN.py](ood_methods/ODIN.py) | ![Static Badge](https://img.shields.io/badge/2018-ICLR-4bb2ff?style=for-the-badge) |
+| [MSP](#msp) | [MSP.py](ood_methods/MSP.py) | ![Static Badge](https://img.shields.io/badge/2017-ICLR-4bb2ff?style=for-the-badge) |
 
 
 # References
 
-<div id="ref1"></div> 
+<div id="msp"></div> 
 
 
-[1] [A Baseline for Detecting Misclassified and Out-of-Distribution Examples in Neural Networks](https://arxiv.org/pdf/1610.02136) 
+1. [A Baseline for Detecting Misclassified and Out-of-Distribution Examples in Neural Networks.](https://arxiv.org/pdf/1610.02136) [[Code]](https://github.com/hendrycks/error-detection)
 
 
-<div id="ref2"></div> 
+<div id="odin"></div> 
 
-[2] [Enhancing The Reliability of Out-of-distribution Image Detection in Neural Networks](https://arxiv.org/pdf/1706.02690) 
+2. [Enhancing The Reliability of Out-of-distribution Image Detection in Neural Networks.](https://arxiv.org/pdf/1706.02690) [[Code]](https://github.com/facebookresearch/odin)
 
-<div id="ref4"></div>
+<div id="energy"></div>
 
-[4] [Energy-based Out-of-distribution Detection](https://arxiv.org/pdf/2010.03759) 
+[4] [Energy-based Out-of-distribution Detection.](https://arxiv.org/pdf/2010.03759) [[Code]](https://github.com/wetliu/energy_ood)
 
-[5] On the Importance of Gradients for Detecting Distributional Shifts in the Wild
+<div id="gradnorm"></div>
 
-[6] ReAct: Out-of-distribution Detection With Rectified Activations
+[5] [On the Importance of Gradients for Detecting Distributional Shifts in the Wild.](https://arxiv.org/pdf/2110.00218) [[Code]](https://github.com/deeplearning-wisc/gradnorm_ood)
 
-[7] Detection of Out-of-Distribution Samples Using Binary Neuron Activation Patterns
+<div id="react"></div> 
+
+[6] [ReAct: Out-of-distribution Detection With Rectified Activations.](https://arxiv.org/pdf/2111.12797) [[Code]](https://github.com/deeplearning-wisc/react)
+
+<div id="nap"></div> 
+
+[7] [Detection of Out-of-Distribution Samples Using Binary Neuron Activation Patterns.](https://openaccess.thecvf.com/content/CVPR2023/papers/Olber_Detection_of_Out-of-Distribution_Samples_Using_Binary_Neuron_Activation_Patterns_CVPR_2023_paper.pdf) [[Code]](https://github.com/safednn-group/nap-ood)
