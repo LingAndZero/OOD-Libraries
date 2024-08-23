@@ -17,12 +17,12 @@ def get_dataset(dataset):
             transforms.RandomHorizontalFlip(),
             transforms.RandomCrop(size, padding=4),
             transforms.ToTensor(),
-            transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
+            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
         ])
         test_transform = transforms.Compose([
             transforms.Resize([size,size]), 
             transforms.ToTensor(),
-            transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
+            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
         ])
         train_dataset = CIFAR10("./data/cifar10", train=True, transform=train_transform, download=True)
         test_dataset = CIFAR10("./data/cifar10", train=False, transform=test_transform, download=True)
@@ -61,7 +61,7 @@ def get_dataset(dataset):
     elif dataset == "iSUN":
         transform = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
+            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
         ])
         train_dataset = None
         test_dataset = datasets.ImageFolder(root='./data/iSUN', transform=transform)
@@ -70,7 +70,7 @@ def get_dataset(dataset):
         transform = transforms.Compose([
             transforms.CenterCrop(32),
             transforms.ToTensor(),
-            transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
+            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
         ])
         train_dataset = None
         test_dataset = datasets.ImageFolder(root='./data/LSUN', transform=transform)
@@ -78,7 +78,7 @@ def get_dataset(dataset):
     elif dataset == "LSUN_resize":
         transform = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
+            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
         ])
         train_dataset = None
         test_dataset = datasets.ImageFolder(root='./data/LSUN_resize', transform=transform)
@@ -87,7 +87,7 @@ def get_dataset(dataset):
         crop_transform = transforms.Compose([
             transforms.CenterCrop(32),
             transforms.ToTensor(),
-            transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
+            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
         ])
         train_dataset = None
         test_dataset = datasets.ImageFolder(root='./data/TinyImageNet_crop', transform=crop_transform)
@@ -95,7 +95,7 @@ def get_dataset(dataset):
     elif dataset == "TinyImageNet_resize":
         transform = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
+            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
         ])
         train_dataset = None
         test_dataset = datasets.ImageFolder(root='./data/TinyImageNet_resize', transform=transform)

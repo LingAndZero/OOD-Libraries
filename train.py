@@ -77,6 +77,7 @@ def test(model, test_loader, device):
 
     accuracy = correct / total
     print(f'Accuracy: {accuracy * 100:.2f}%')
+    return accuracy
 
 
 if __name__ == '__main__':
