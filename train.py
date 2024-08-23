@@ -1,6 +1,7 @@
 import os
 import torch
 import torch.nn as nn
+import timm
 import argparse
 from tqdm import tqdm
 from torch.optim.lr_scheduler import MultiStepLR
@@ -43,7 +44,7 @@ from utils.models import get_model
 def get_train_options():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--dataset", type=str, default="cifar10")
+    parser.add_argument("--ind_dataset", type=str, default="cifar10")
     parser.add_argument("--model", type=str, default="ResNet")
     parser.add_argument("--gpu", type=int, default=0)
 
@@ -86,7 +87,7 @@ if __name__ == '__main__':
 
     device = torch.device('cuda:{}'.format(args.gpu) if torch.cuda.is_available() and args.gpu != -1 else 'cpu')
 
-    train_dataset, test_dataset = get_dataset(args.dataset)
+    train_dataset, test_dataset = get_dataset(args.ind_dataset)
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.bs, shuffle=True, pin_memory=True, num_workers=4)
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=args.bs, shuffle=False, pin_memory=True, num_workers=4)
 
@@ -94,6 +95,10 @@ if __name__ == '__main__':
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
     scheduler = MultiStepLR(optimizer, milestones=[50, 75, 90], gamma=0.1)
+
+    save_path = './checkpoints/' + args.ind_dataset + '-' + args.model + '-' + str(args.random_seed)
+    os.makedirs(save_path, exist_ok=True)
+    saver = timm.utils.CheckpointSaver(model, optimizer, checkpoint_dir=save_path, max_history=1)  
 
     for epoch in tqdm(range(args.epoch)):
         model.train()
@@ -106,9 +111,6 @@ if __name__ == '__main__':
             loss.backward()
             optimizer.step()
 
-        test(model, test_loader, device)
+        valid_accuracy = test(model, test_loader, device)
         scheduler.step()
-
-    filename = 'checkpoints/{}-{}-{}-{}.pt'.format(args.dataset, args.model, args.random_seed, args.epoch)
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-    torch.save(model.state_dict(), filename)
+        saver.save_checkpoint(epoch, metric=valid_accuracy)
