@@ -61,52 +61,6 @@ class BasicBlock(nn.Module):
 
         return out
 
-    def forward_masked(self, x, mask_weight=None, mask_bias=None):
-        residual = x
-
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-
-        out = self.conv2(out)
-        out = self.bn2(out)
-
-        if self.downsample is not None:
-            residual = self.downsample(x)
-
-        out = out + residual
-        out = self.shortcut(out)
-        out = self.relu(out)
-
-        if mask_weight is not None:
-            out = out * mask_weight[None,:,None,None]
-        if mask_bias is not None:
-            out = out + mask_bias[None,:,None,None]
-        return out
-
-    def forward_threshold(self, x, threshold=1e10):
-        residual = x
-
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-
-        out = self.conv2(out)
-        out = self.bn2(out)
-
-        if self.downsample is not None:
-            residual = self.downsample(x)
-
-        out = out + residual
-        out = self.relu(out)
-
-        b, c, w, h = out.shape
-        mask = out.view(b, c, -1).mean(2) < threshold
-        out = mask[:, :, None, None] * out
-        # print(mask.sum(1).float().mean(0))
-        return out
-
-
 class Bottleneck(nn.Module):
     expansion = 4
 
@@ -144,56 +98,6 @@ class Bottleneck(nn.Module):
         out = out + residual
         out = self.shortcut(out)
         out = self.relu(out)
-
-        return out
-
-    def forward_masked(self, x, mask_weight=None, mask_bias=None):
-        residual = x
-
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-
-        out = self.conv2(out)
-        out = self.bn2(out)
-        out = self.relu(out)
-
-        out = self.conv3(out)
-        out = self.bn3(out)
-
-        if self.downsample is not None:
-            residual = self.downsample(x)
-
-        out = out + residual
-        if mask_weight is not None:
-            out = out * mask_weight[None,:,None,None]
-        if mask_bias is not None:
-            out = out + mask_bias[None,:,None,None]
-        out = self.relu(out)
-        return out
-
-    def forward_threshold(self, x, threshold=1e10):
-        residual = x
-
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-
-        out = self.conv2(out)
-        out = self.bn2(out)
-        out = self.relu(out)
-
-        out = self.conv3(out)
-        out = self.bn3(out)
-
-        if self.downsample is not None:
-            residual = self.downsample(x)
-
-        out = out + residual
-        out = self.relu(out)
-        b, c, w, h = out.shape
-        mask = out.view(b, c, -1).mean(2) < threshold
-        out = mask[:, :, None, None] * out
 
         return out
 
@@ -265,7 +169,13 @@ class AbstractResNet(nn.Module):
         x = self.fc(x)
         return x
     
-
+    def forward_noise(self, x, noise):
+        x = self.features(x + noise)
+        x = self.avgpool(x)
+        x = x.view(x.size(0), -1)
+        x = self.fc(x)
+        return x
+    
     def load_state_dict(self, state_dict, strict=True):
         missing_keys = []
         unexpected_keys = []
@@ -308,15 +218,6 @@ class ResNet(AbstractResNet):
         super(ResNet, self).__init__(block, layers, num_classes)
         self.fc = nn.Linear(512 * block.expansion, num_classes)
         self._initial_weight()
-
-    def forward_masked(self, x, mask_weight=None, mask_bias=None):
-        x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
-        x = self.layer3(self.layer2(self.layer1(x)))
-        x = self.layer4[:-1](x)
-        x = self.layer4[-1].forward_masked(x, mask_weight=mask_weight, mask_bias=mask_bias)
-        x = self.avgpool(x)
-        x = x.view(x.size(0), -1)
-        return self.fc(x)
 
     def feature_list(self, x):
         out_list = []
@@ -450,15 +351,6 @@ class ResNetCifar(AbstractResNet):
         feat = feat.view(feat.size(0), -1)
         out = self.fc(feat)
         return out
-
-    def forward_masked(self, x, mask_weight=None, mask_bias=None):
-        x = F.relu(self.bn1(self.conv1(x)))
-        x = self.layer3(self.layer2(self.layer1(x)))
-        x = self.layer4[:-1](x)
-        x = self.layer4[-1].forward_masked(x, mask_weight=mask_weight, mask_bias=mask_bias)
-        x = self.avgpool(x)
-        x = x.view(x.size(0), -1)
-        return self.fc(x)
 
     def forward_threshold(self, x, threshold=1e10):
         x = F.relu(self.bn1(self.conv1(x)))

@@ -3,31 +3,26 @@ from torchvision import datasets, transforms
 
 def get_dataset(dataset):
 
-    # current_directory = os.getcwd()
-    # print(current_directory)
-
     train_dataset = None
     test_dataset = None
 
     # ind dataset
+
+    # small-scale dataset
     if dataset == "cifar10":
         from torchvision.datasets import CIFAR10
         size = 32
-        mean = (0.5, 0.5, 0.5)
-        std = (0.5, 0.5, 0.5)
         train_transform = transforms.Compose([
             transforms.Resize([size,size]), 
             transforms.RandomHorizontalFlip(),
             transforms.RandomCrop(size, padding=4),
             transforms.ToTensor(),
-            transforms.Normalize(mean=mean, std=std)
-            # transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
+            transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
         ])
         test_transform = transforms.Compose([
             transforms.Resize([size,size]), 
             transforms.ToTensor(),
-            transforms.Normalize(mean=mean, std=std)
-            # transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
+            transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
         ])
         train_dataset = CIFAR10("./data/cifar10", train=True, transform=train_transform, download=True)
         test_dataset = CIFAR10("./data/cifar10", train=False, transform=test_transform, download=True)
@@ -48,6 +43,7 @@ def get_dataset(dataset):
         train_dataset = CIFAR100("./data/cifar100", train=True, transform=train_transform, download=True)
         test_dataset = CIFAR100("./data/cifar100", train=False, transform=test_transform, download=True)
     
+    # large-scale dataset
     elif dataset == "ImageNet":
         transform_test_largescale = transforms.Compose([
             transforms.Resize(256),
@@ -60,6 +56,8 @@ def get_dataset(dataset):
 
 
     # ood dataset
+
+    # small-scale dataset
     elif dataset == "iSUN":
         transform = transforms.Compose([
             transforms.ToTensor(),
@@ -67,8 +65,44 @@ def get_dataset(dataset):
         ])
         train_dataset = None
         test_dataset = datasets.ImageFolder(root='./data/iSUN', transform=transform)
+        
+    elif dataset == "LSUN_crop":
+        transform = transforms.Compose([
+            transforms.CenterCrop(32),
+            transforms.ToTensor(),
+            transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
+        ])
+        train_dataset = None
+        test_dataset = datasets.ImageFolder(root='./data/LSUN', transform=transform)
+
+    elif dataset == "LSUN_resize":
+        transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
+        ])
+        train_dataset = None
+        test_dataset = datasets.ImageFolder(root='./data/LSUN_resize', transform=transform)
+
+    elif dataset == "TinyImageNet_crop":
+        crop_transform = transforms.Compose([
+            transforms.CenterCrop(32),
+            transforms.ToTensor(),
+            transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
+        ])
+        train_dataset = None
+        test_dataset = datasets.ImageFolder(root='./data/TinyImageNet_crop', transform=crop_transform)
+
+    elif dataset == "TinyImageNet_resize":
+        transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])
+        ])
+        train_dataset = None
+        test_dataset = datasets.ImageFolder(root='./data/TinyImageNet_resize', transform=transform)
+
+
     
-    # largescale
+    # large-scale dataset
     elif dataset == "iNat":
         transform_test_largescale = transforms.Compose([
             transforms.Resize(256),
