@@ -41,12 +41,15 @@ def DISTIL(origin_data, model, logits, args):
             base_logits = torch.cat((base_logits, logits[p_labels[i]].unsqueeze(0)), dim=0)
     
     base_logits = base_logits.cuda()
-    for iters in range(5):
+    for iters in range(10):
         optimizer.zero_grad()
         tmp_pred = model.module.forward_noise(origin_data, noise)
  
-        total_loss = criterion(F.log_softmax(tmp_pred / 1, dim=1), F.softmax(base_logits / 1, dim=1))
+        total_loss = criterion(F.log_softmax(tmp_pred / 1000, dim=1), F.softmax(base_logits / 1000, dim=1))
         total_loss.backward()
+        print(total_loss)
+        if total_loss <= 1e-6 * origin_data.size()[0]:
+            break
         optimizer.step()
 
     noise = noise.detach()

@@ -7,6 +7,7 @@
 | CORES | - | - | ![Static Badge](https://img.shields.io/badge/2024-CVPR-brightgreen?style=for-the-badge) |
 | [NAP](#nap) | - | - | ![Static Badge](https://img.shields.io/badge/2023-CVPR-brightgreen?style=for-the-badge) |
 | [KNN](#knn) | - | - | ![Static Badge](https://img.shields.io/badge/2022-ICML-orange?style=for-the-badge) |
+| [ASH](#ash) | - | - | ![Static Badge](https://img.shields.io/badge/2022-ICLR-4bb2ff?style=for-the-badge) |
 | [DICE](#dice) | - | - | ![Static Badge](https://img.shields.io/badge/2022-ECCV-pink?style=for-the-badge) |
 | [ReAct](#react) | - | [ReAct.py](ood_methods/ReAct.py) | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) |
 | [GradNorm](#gradnorm) | - | - | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) |
@@ -58,6 +59,11 @@ Texture
 <div id="dice"></div> 
 
 - [DICE: Leveraging Sparsification for Out-of-Distribution Detection.](https://arxiv.org/pdf/2111.09805) [[Code]](https://github.com/deeplearning-wisc/dice)
+
+<div id="ash"></div> 
+
+- [Extremely Simple Activation Shaping for Out-of-Distribution Detection.](https://arxiv.org/pdf/2209.09858) [[Code]](https://github.com/andrijazz/ash)
+
 
 <div id="knn"></div> 
 

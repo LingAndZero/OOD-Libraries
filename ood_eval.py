@@ -25,19 +25,38 @@ def get_eval_options():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--ind_dataset", type=str, default="cifar10")
-    parser.add_argument("--ood_dataset", type=str, default="LSUN_resize")
-    parser.add_argument("--model", type=str, default="ResNet")
+    parser.add_argument("--ood_dataset", type=str, default="TinyImageNet_crop")
+    parser.add_argument("--model", type=str, default="DenseNet")
     parser.add_argument("--gpu", type=int, default=0)
 
     parser.add_argument("--random_seed", type=int, default=0)
-    parser.add_argument("--bs", type=int, default=256)
-    parser.add_argument("--OOD_method", type=str, default="MSP")
+    parser.add_argument("--bs", type=int, default=128)
+    parser.add_argument("--OOD_method", type=str, default="Distil")
 
     parser.add_argument('--num_classes', type=int, default=10)
 
     args = parser.parse_args()
     return args
 
+def test(model, test_loader, device):
+    model.eval()
+
+    correct = 0
+    total = 0
+
+    with torch.no_grad():
+        for data, labels in test_loader:
+            data, labels = data.to(device), labels.to(device)
+            outputs = model(data)
+        
+            _, predicted = torch.max(outputs, 1)
+            
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
+
+    accuracy = correct / total
+    print(f'Accuracy: {accuracy * 100:.2f}%')
+    return accuracy
 
 if __name__ == '__main__':
     start_time = time.time()
@@ -48,7 +67,7 @@ if __name__ == '__main__':
     _, ind_dataset = get_dataset(args.ind_dataset)
     _, ood_dataset = get_dataset(args.ood_dataset)
 
-    if args.OOD_method == 'GradNorm':
+    if args.OOD_method in ['GradNorm']:
         args.bs = 1
 
     ind_loader = torch.utils.data.DataLoader(dataset=ind_dataset, batch_size=args.bs, pin_memory=True, num_workers=2, shuffle=False)
@@ -58,6 +77,7 @@ if __name__ == '__main__':
     if torch.cuda.device_count() > 1 and args.OOD_method != 'GradNorm':
         model = nn.DataParallel(model, device_ids=[0, 1])
     model.eval()
+    
     ind_scores, ood_scores = None, None
 
     if args.OOD_method == "MSP":
@@ -88,17 +108,36 @@ if __name__ == '__main__':
         ind_scores = mutation_eval(model, ind_loader)
         ood_scores = mutation_eval(model, ood_loader)
     elif args.OOD_method == "Distil":
+        
         file_logits = "result/logits/{}_{}_in.csv".format(args.ind_dataset, args.model)
-        os.makedirs(os.path.dirname(file_logits), exist_ok=True)
 
-        train_data, _ = get_dataset(args.ind_dataset)
-        train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=True, num_workers=2)
-        train_logits = get_logits(model, train_loader, args)
-        train_logits = torch.from_numpy(train_logits)
+        # load training logits
+        if os.path.exists(file_logits):
+            train_logits = torch.from_numpy(np.genfromtxt(file_logits))
+            print("load train_logits")
+        else:
+            train_data, _ = get_dataset(args.ind_dataset)
+            train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=True, num_workers=2)
+            train_logits = get_logits(model, train_loader, args)
+            train_logits = torch.from_numpy(train_logits)
+            np.savetxt(file_logits, train_logits)
 
-        np.savetxt(file_logits, train_logits) 
+        # file_path_in = "result/{}_{}_{}_in.csv".format(args.OOD_method, args.ind_dataset, args.model)
+        # if os.path.exists(file_path_in):
+        #    ind_scores = np.genfromtxt(file_path_in, delimiter=' ')
+        #    print("load ind-scores")
+        # else:
+        #    ind_scores = distil_eval(model, ind_loader, train_logits, args)
+        #    np.savetxt(file_path_in, ind_scores, delimiter=' ')
 
-        ind_scores = distil_eval(model, ind_loader, train_logits, args)
+        # file_path_out = "result/{}_{}_{}_{}_out.csv".format(args.OOD_method, args.ind_dataset, args.ood_dataset, args.model)
+        # if os.path.exists(file_path_out):
+        #     ood_scores = np.genfromtxt(file_path_out, delimiter=' ')
+        #     print("load ood-scores")
+        # else:
+        #     ood_scores = distil_eval(model, ood_loader, train_logits, args)
+        #     np.savetxt(file_path_out, ood_scores, delimiter=' ')
+        # ind_scores = distil_eval(model, ind_loader, train_logits, args)
         ood_scores = distil_eval(model, ood_loader, train_logits, args)
 
     ind_labels = np.ones(ind_scores.shape[0])

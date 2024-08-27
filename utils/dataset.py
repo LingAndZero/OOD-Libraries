@@ -90,7 +90,7 @@ def get_dataset(dataset):
             transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
         ])
         train_dataset = None
-        test_dataset = datasets.ImageFolder(root='./data/TinyImageNet_crop', transform=crop_transform)
+        test_dataset = datasets.ImageFolder(root='./data/TinyImagenet-crop', transform=crop_transform)
 
     elif dataset == "TinyImageNet_resize":
         transform = transforms.Compose([
@@ -98,7 +98,7 @@ def get_dataset(dataset):
             transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
         ])
         train_dataset = None
-        test_dataset = datasets.ImageFolder(root='./data/TinyImageNet_resize', transform=transform)
+        test_dataset = datasets.ImageFolder(root='./data/TinyImagenet-resize', transform=transform)
 
 
     

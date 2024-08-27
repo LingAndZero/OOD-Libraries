@@ -20,8 +20,8 @@ def get_model(args, pretrain=False):
         model = WideResNet(depth=28, num_classes=args.num_classes, widen_factor=1, droprate=0.0)
 
     if pretrain:
-        filename = '/home/zwling/code/OOD-Libraries/checkpoints/' + args.ind_dataset + '-' + args.model + '-0-100.pt'
-        model.load_state_dict(torch.load(filename))
+        save_path = './checkpoints/' + args.ind_dataset + '-' + args.model + '-0'
+        model.load_state_dict((torch.load(save_path + '/last.pth.tar')['state_dict']))
 
     return model
 
