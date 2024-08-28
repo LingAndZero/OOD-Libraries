@@ -10,7 +10,7 @@ def react_eval(model, data_loader, threshold):
 
     for (images, _) in tqdm(data_loader):
         images = images.cuda()
-        output = model.module.forward_threshold(images, threshold)
+        output = model.forward_threshold(images, threshold)
 
         output = 1 * torch.logsumexp(output / 1, dim=1).data.cpu().numpy()
 
@@ -29,7 +29,7 @@ def get_threshold(model, train_loader, p):
     with torch.no_grad():
         for (images, _) in tqdm(train_loader):
             images = images.cuda()
-            output = model.module.compute_threshold(images).data.cpu().numpy()
+            output = model.compute_threshold(images).data.cpu().numpy()
 
             if result is None:
                 result = output

@@ -45,14 +45,14 @@ def get_train_options():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--ind_dataset", type=str, default="cifar10")
-    parser.add_argument("--model", type=str, default="DenseNet")
+    parser.add_argument("--model", type=str, default="ResNet")
     parser.add_argument("--gpu", type=int, default=0)
 
     parser.add_argument("--random_seed", type=int, default=0)
     parser.add_argument("--epoch", type=int, default=100)
-    parser.add_argument("--bs", type=int, default=64)
+    parser.add_argument("--bs", type=int, default=128)
     parser.add_argument("--lr", type=float, default=0.1)
-    parser.add_argument("--weight_decay", type=float, default=1e-4)
+    parser.add_argument("--weight_decay", type=float, default=5e-4)
     parser.add_argument("--momentum", type=float, default=0.9)
     parser.add_argument('--num_classes', type=int, default=10)
 

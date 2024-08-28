@@ -1,5 +1,6 @@
 import torch
-from models.ResNet import *
+from models.ResNet_CIFAR import *
+from models.ResNet import resnet50
 from models.DenseNet import *
 from models.WideResNet import *
 
@@ -9,7 +10,7 @@ def get_model(args, pretrain=False):
 
     if args.model == "ResNet":
         if args.ind_dataset in ['cifar10', 'cifar100']:
-            model = resnet18(num_classes=args.num_classes)
+            model = ResNet18()
         else:
             model = resnet50(num_classes=args.num_classes, pretrained=True)
 

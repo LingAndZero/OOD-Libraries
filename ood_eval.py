@@ -11,6 +11,7 @@ from ood_methods.ODIN import odin_eval
 from ood_methods.Mahalanobis import mahalanobis_eval
 from ood_methods.ReAct import react_eval, get_threshold
 from ood_methods.GradNorm import gradnorm_eval
+from ood_methods.ASH import ash_eval
 
 from ood_methods.Mutation import mutation_eval
 from ood_methods.Distil import distil_eval, get_logits
@@ -24,16 +25,16 @@ from utils.metrics import cal_metric
 def get_eval_options():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--ind_dataset", type=str, default="cifar10")
-    parser.add_argument("--ood_dataset", type=str, default="TinyImageNet_crop")
-    parser.add_argument("--model", type=str, default="DenseNet")
+    parser.add_argument("--ind_dataset", type=str, default="ImageNet")
+    parser.add_argument("--ood_dataset", type=str, default="iNat")
+    parser.add_argument("--model", type=str, default="ResNet")
     parser.add_argument("--gpu", type=int, default=0)
 
     parser.add_argument("--random_seed", type=int, default=0)
     parser.add_argument("--bs", type=int, default=128)
-    parser.add_argument("--OOD_method", type=str, default="Distil")
+    parser.add_argument("--OOD_method", type=str, default="ReAct")
 
-    parser.add_argument('--num_classes', type=int, default=10)
+    parser.add_argument('--num_classes', type=int, default=1000)
 
     args = parser.parse_args()
     return args
@@ -70,12 +71,10 @@ if __name__ == '__main__':
     if args.OOD_method in ['GradNorm']:
         args.bs = 1
 
-    ind_loader = torch.utils.data.DataLoader(dataset=ind_dataset, batch_size=args.bs, pin_memory=True, num_workers=2, shuffle=False)
-    ood_loader = torch.utils.data.DataLoader(dataset=ood_dataset, batch_size=args.bs, pin_memory=True, num_workers=2, shuffle=False)
+    ind_loader = torch.utils.data.DataLoader(dataset=ind_dataset, batch_size=args.bs, pin_memory=True, num_workers=8, shuffle=False)
+    ood_loader = torch.utils.data.DataLoader(dataset=ood_dataset, batch_size=args.bs, pin_memory=True, num_workers=8, shuffle=False)
 
-    model = get_model(args, pretrain=True).cuda()
-    if torch.cuda.device_count() > 1 and args.OOD_method != 'GradNorm':
-        model = nn.DataParallel(model, device_ids=[0, 1])
+    model = get_model(args, pretrain=False).cuda()
     model.eval()
     
     ind_scores, ood_scores = None, None
@@ -93,16 +92,24 @@ if __name__ == '__main__':
         ind_scores = mahalanobis_eval(model, ind_loader)
         ood_scores = mahalanobis_eval(model, ood_loader)
     elif args.OOD_method == "ReAct":
-        train_data, _ = get_dataset(args.ind_dataset)
-        train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, shuffle=False)
-        threshold = get_threshold(model, train_loader, 90)
-        # with open('result/threshold.txt', 'w') as f:
-        #     f.write(str(threshold))
+        # load ID threshold
+        file_threshold = "result/threshold/{}_{}_in.csv".format(args.ind_dataset, args.model)
+        if os.path.exists(file_threshold):
+            threshold = torch.from_numpy(np.genfromtxt(file_threshold))
+            print("load ID threshold")
+        else:    
+            train_data, _ = get_dataset(args.ind_dataset)
+            train_loader = torch.utils.data.DataLoader(train_data, batch_size=256, pin_memory=True, shuffle=False, num_workers=8)
+            threshold = get_threshold(model, train_loader, 90)
+            np.savetxt(file_threshold, threshold)
         ind_scores = react_eval(model, ind_loader, threshold)
         ood_scores = react_eval(model, ood_loader, threshold)
     elif args.OOD_method == "GradNorm":
         ind_scores = gradnorm_eval(model, ind_loader, args)
         ood_scores = gradnorm_eval(model, ood_loader, args)
+    elif args.OOD_method == "ASH":
+        ind_scores = ash_eval(model, ind_loader)
+        ood_scores = ash_eval(model, ood_loader)
 
     elif args.OOD_method == "Mutation":
         ind_scores = mutation_eval(model, ind_loader)
@@ -137,7 +144,7 @@ if __name__ == '__main__':
         # else:
         #     ood_scores = distil_eval(model, ood_loader, train_logits, args)
         #     np.savetxt(file_path_out, ood_scores, delimiter=' ')
-        # ind_scores = distil_eval(model, ind_loader, train_logits, args)
+        ind_scores = distil_eval(model, ind_loader, train_logits, args)
         ood_scores = distil_eval(model, ood_loader, train_logits, args)
 
     ind_labels = np.ones(ind_scores.shape[0])

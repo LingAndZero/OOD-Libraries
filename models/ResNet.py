@@ -155,6 +155,7 @@ class AbstractResNet(nn.Module):
         x = self.fc(x)
         return x
 
+    # for ReAct
     def compute_threshold(self, x):
         x = self.features(x)
         x = self.avgpool(x)
@@ -164,11 +165,12 @@ class AbstractResNet(nn.Module):
     def forward_threshold(self, x, threshold=1e10):
         x = self.features(x)
         x = self.avgpool(x)
-        x = x.clip(max=threshold)
         x = x.view(x.size(0), -1)
+        x = x.clip(max=threshold)
         x = self.fc(x)
         return x
     
+    # for Distil
     def forward_noise(self, x, noise):
         x = self.features(x + noise)
         x = self.avgpool(x)
@@ -176,6 +178,15 @@ class AbstractResNet(nn.Module):
         x = self.fc(x)
         return x
     
+    # for ASH
+    def ash_forward(self, x):
+        x = self.features(x)
+        x = self.avgpool(x)
+        x = ash_s(x)
+        x = x.view(x.size(0), -1)
+        x = self.fc(x)
+        return x
+
     def load_state_dict(self, state_dict, strict=True):
         missing_keys = []
         unexpected_keys = []
@@ -251,14 +262,7 @@ class ResNet(AbstractResNet):
         out = self.avgpool(out)
         # out = out.clip(max=1.0)
         return out
-
-
-def resnet18(pretrained=False, **kwargs):
-    model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
-    if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet18']))
-    return model
-
+    
 
 def resnet50(pretrained=False, **kwargs):
     model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
@@ -321,79 +325,3 @@ def ash_s(x, percentile=65):
     x = x * torch.exp(scale[:, None, None, None])
 
     return x
-
-class ResNetCifar(AbstractResNet):
-    def __init__(self, block, layers, num_classes=10, method='', p=None, info=None):
-        super(ResNetCifar, self).__init__(block, layers, num_classes)
-        self.in_planes = 64
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
-        self.method = method
-
-        self.fc = nn.Linear(512 * block.expansion, num_classes)
-
-        # if method.find("ood") > -1:
-        #     self.fc_ood = RouteFcMaxAct(512 * block.expansion, 1, topk=p)
-
-        self.avgpool = nn.AvgPool2d(4, stride=1)
-        self._initial_weight()
-
-    def features(self, x):
-        out = F.relu(self.bn1(self.conv1(x)))
-        out = self.layer1(out)
-        out = self.layer2(out)
-        out = self.layer3(out)
-        out = self.layer4(out)
-        return out
-
-    def forward(self, x, fc_params=None):
-        feat = self.features(x)
-        feat = self.avgpool(feat)
-        feat = feat.view(feat.size(0), -1)
-        out = self.fc(feat)
-        return out
-
-    def forward_threshold(self, x, threshold=1e10):
-        x = F.relu(self.bn1(self.conv1(x)))
-        x= self.layer4(self.layer3(self.layer2(self.layer1(x))))
-        x = self.avgpool(x)
-        x = x.clip(max=threshold)
-        x = x.view(x.size(0), -1)
-        return self.fc(x)
-
-    def feature_list(self, x):
-        out_list = []
-        out = F.relu(self.bn1(self.conv1(x)))
-        # out_list.append(out)
-        out = self.layer1(out)
-        # out_list.append(out)
-        out = self.layer2(out)
-        # out_list.append(out)
-        out = self.layer3(out)
-        out = self.layer4(out)
-        out_list.append(out)
-        out = self.avgpool(out)
-        out = out.view(out.size(0), -1)
-        y = self.fc(out)
-        return y, out_list
-
-    def intermediate_forward(self, x, layer_index):
-        # if layer_index >= 0:
-        out = F.relu(self.bn1(self.conv1(x)))
-        # if layer_index >= 1:
-        out = self.layer1(out)
-        # if layer_index >= 2:
-        out = self.layer2(out)
-        # if layer_index >= 3:
-        out = self.layer3(out)
-        # if layer_index >= 4:
-        out = self.layer4(out)
-        return out
-
-def resnet18_cifar(**kwargs):
-    return ResNetCifar(BasicBlock, [2,2,2,2], **kwargs)
-
-def resnet50_cifar(**kwargs):
-    return ResNetCifar(Bottleneck, [3, 4, 6, 3], **kwargs)
-
-def resnet101_cifar(**kwargs):
-    return ResNetCifar(Bottleneck, [3, 4, 23, 3], **kwargs)
