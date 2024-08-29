@@ -39,7 +39,7 @@ def DISTIL(origin_data, model, logits, args, device):
         grayscale_cam = cam(input_tensor=origin_data, targets=p_labels, aug_smooth=False, eigen_smooth=False)
     
     grayscale_cam = torch.from_numpy(grayscale_cam).to(device)
-    grayscale_cam = grayscale_cam.unsqueeze(1).expand(-1, 3, -1, -1)
+    grayscale_cam = grayscale_cam.unsqueeze(1).expand(-1, 3, -1, -1).cpu()
 
     # get base logits
     base_logits = None
@@ -59,24 +59,23 @@ def DISTIL(origin_data, model, logits, args, device):
         total_loss.backward()
         optimizer.step()
 
-
+    noise = noise.detach().cpu()
     noise = 0.6 * noise + 0.4 * grayscale_cam * noise
-    noise = noise.detach()
 
     for idx in range(origin_data.shape[0]):
-        # print(torch.norm(noise[idx], p=2).cpu())
+        print(torch.norm(noise[idx], p=2).cpu())
         score.append(-torch.norm(noise[idx], p=2).cpu())
 
     return np.array(score)
 
 
-def get_logits(model, data_loader, args, mode="train"):
+def get_logits(model, data_loader, args, device, mode="train"):
     model.eval()
     result = [[] for i in range(args.num_classes)]
 
     with torch.no_grad():
         for (images, labels) in tqdm(data_loader):
-            images, labels = images.cuda(), labels.cuda()
+            images, labels = images.to(device), labels.to(device)
             output = model(images)
 
             if mode == "train":
