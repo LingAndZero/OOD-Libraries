@@ -182,7 +182,7 @@ class AbstractResNet(nn.Module):
     def ash_forward(self, x):
         x = self.features(x)
         x = self.avgpool(x)
-        x = ash_s(x)
+        x = ash_p(x)
         x = x.view(x.size(0), -1)
         x = self.fc(x)
         return x

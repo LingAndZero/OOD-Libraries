@@ -4,12 +4,12 @@ import torch.nn.functional as F
 from tqdm import tqdm
 
 
-def react_eval(model, data_loader, threshold):
+def react_eval(model, data_loader, threshold, device):
     model.eval()
     result = None
 
     for (images, _) in tqdm(data_loader):
-        images = images.cuda()
+        images = images.to(device)
         output = model.forward_threshold(images, threshold)
 
         output = 1 * torch.logsumexp(output / 1, dim=1).data.cpu().numpy()

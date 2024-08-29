@@ -25,39 +25,19 @@ from utils.metrics import cal_metric
 def get_eval_options():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--ind_dataset", type=str, default="ImageNet")
-    parser.add_argument("--ood_dataset", type=str, default="iNat")
+    parser.add_argument("--ind_dataset", type=str, default="cifar10")
+    parser.add_argument("--ood_dataset", type=str, default="TinyImageNet_resize")
     parser.add_argument("--model", type=str, default="ResNet")
     parser.add_argument("--gpu", type=int, default=0)
 
     parser.add_argument("--random_seed", type=int, default=0)
-    parser.add_argument("--bs", type=int, default=128)
+    parser.add_argument("--bs", type=int, default=1024)
     parser.add_argument("--OOD_method", type=str, default="ReAct")
 
-    parser.add_argument('--num_classes', type=int, default=1000)
+    parser.add_argument('--num_classes', type=int, default=10)
 
     args = parser.parse_args()
     return args
-
-def test(model, test_loader, device):
-    model.eval()
-
-    correct = 0
-    total = 0
-
-    with torch.no_grad():
-        for data, labels in test_loader:
-            data, labels = data.to(device), labels.to(device)
-            outputs = model(data)
-        
-            _, predicted = torch.max(outputs, 1)
-            
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
-
-    accuracy = correct / total
-    print(f'Accuracy: {accuracy * 100:.2f}%')
-    return accuracy
 
 if __name__ == '__main__':
     start_time = time.time()
@@ -74,7 +54,7 @@ if __name__ == '__main__':
     ind_loader = torch.utils.data.DataLoader(dataset=ind_dataset, batch_size=args.bs, pin_memory=True, num_workers=8, shuffle=False)
     ood_loader = torch.utils.data.DataLoader(dataset=ood_dataset, batch_size=args.bs, pin_memory=True, num_workers=8, shuffle=False)
 
-    model = get_model(args, pretrain=False).cuda()
+    model = get_model(args, pretrain=True).to(device)
     model.eval()
     
     ind_scores, ood_scores = None, None
@@ -82,38 +62,48 @@ if __name__ == '__main__':
     if args.OOD_method == "MSP":
         ind_scores = msp_eval(model, ind_loader)
         ood_scores = msp_eval(model, ood_loader)
+
     elif args.OOD_method == "Energy":
         ind_scores = energy_eval(model, ind_loader)
         ood_scores = energy_eval(model, ood_loader)
+
     elif args.OOD_method == "ODIN":
         ind_scores = odin_eval(model, ind_loader)
         ood_scores = odin_eval(model, ood_loader)
+
     elif args.OOD_method == "Mahalanobis":
         ind_scores = mahalanobis_eval(model, ind_loader)
         ood_scores = mahalanobis_eval(model, ood_loader)
+
     elif args.OOD_method == "ReAct":
+
         # load ID threshold
         file_threshold = "result/threshold/{}_{}_in.csv".format(args.ind_dataset, args.model)
         if os.path.exists(file_threshold):
-            threshold = torch.from_numpy(np.genfromtxt(file_threshold))
+            threshold = torch.from_numpy(np.genfromtxt(file_threshold)).to(device)
             print("load ID threshold")
         else:    
             train_data, _ = get_dataset(args.ind_dataset)
-            train_loader = torch.utils.data.DataLoader(train_data, batch_size=256, pin_memory=True, shuffle=False, num_workers=8)
+            train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)
             threshold = get_threshold(model, train_loader, 90)
-            np.savetxt(file_threshold, threshold)
-        ind_scores = react_eval(model, ind_loader, threshold)
-        ood_scores = react_eval(model, ood_loader, threshold)
+            np.savetxt(file_threshold, np.array([threshold]))
+
+        ind_scores = react_eval(model, ind_loader, threshold, device)
+        ood_scores = react_eval(model, ood_loader, threshold, device)
+
     elif args.OOD_method == "GradNorm":
         ind_scores = gradnorm_eval(model, ind_loader, args)
         ood_scores = gradnorm_eval(model, ood_loader, args)
+
     elif args.OOD_method == "ASH":
-        ind_scores = ash_eval(model, ind_loader)
-        ood_scores = ash_eval(model, ood_loader)
+        ind_scores = ash_eval(model, ind_loader, device)
+        ood_scores = ash_eval(model, ood_loader, device)
+
 
     elif args.OOD_method == "Mutation":
         ind_scores = mutation_eval(model, ind_loader)
         ood_scores = mutation_eval(model, ood_loader)
+
     elif args.OOD_method == "Distil":
         
         file_logits = "result/logits/{}_{}_in.csv".format(args.ind_dataset, args.model)
@@ -144,8 +134,8 @@ if __name__ == '__main__':
         # else:
         #     ood_scores = distil_eval(model, ood_loader, train_logits, args)
         #     np.savetxt(file_path_out, ood_scores, delimiter=' ')
-        ind_scores = distil_eval(model, ind_loader, train_logits, args)
-        ood_scores = distil_eval(model, ood_loader, train_logits, args)
+        ind_scores = distil_eval(model, ind_loader, train_logits, args, device)
+        ood_scores = distil_eval(model, ood_loader, train_logits, args, device)
 
     ind_labels = np.ones(ind_scores.shape[0])
     ood_labels = np.zeros(ood_scores.shape[0])
