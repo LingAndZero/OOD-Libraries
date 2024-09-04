@@ -1,0 +1,16 @@
+Files already downloaded and verified
+Files already downloaded and verified
+load train_logits
+/home/zwling/code/OOD-Libraries/utils/models.py:25: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  model.load_state_dict((torch.load(save_path + '/last.pth.tar')['state_dict']))
+  0%|                                                                                                                              | 0/10 [00:01<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/zwling/code/OOD-Libraries/ood_eval.py", line 138, in <module>
+    ind_scores = distil_eval(model, ind_loader, train_logits, args, device)
+  File "/home/zwling/code/OOD-Libraries/ood_methods/Distil.py", line 29, in distil_eval
+    distil_score = DISTIL(images, model, logits, args, device)
+  File "/home/zwling/code/OOD-Libraries/ood_methods/Distil.py", line 70, in DISTIL
+    tmp_pred = model.forward_noise(origin_data, noise)
+  File "/home/zwling/code/OOD-Libraries/models/ResNet_CIFAR.py", line 142, in forward_noise
+    out = F.relu(self.bn1(self.conv1(x + noise)))
+RuntimeError: The size of tensor a (32) must match the size of tensor b (224) at non-singleton dimension 3

@@ -25,16 +25,17 @@ from utils.metrics import cal_metric
 def get_eval_options():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--ind_dataset", type=str, default="cifar10")
-    parser.add_argument("--ood_dataset", type=str, default="iSUN")
+    parser.add_argument("--ind_dataset", type=str, default="ImageNet")
+    parser.add_argument("--ood_dataset", type=str, default="iNat")
     parser.add_argument("--model", type=str, default="ResNet")
     parser.add_argument("--gpu", type=int, default=0)
+    parser.add_argument('--num_classes', type=int, default=1000)
 
     parser.add_argument("--random_seed", type=int, default=0)
-    parser.add_argument("--bs", type=int, default=1024)
+    parser.add_argument("--bs", type=int, default=64)
     parser.add_argument("--OOD_method", type=str, default="Distil")
 
-    parser.add_argument('--num_classes', type=int, default=10)
+    parser.add_argument('--T', type=int, default=1)
 
     args = parser.parse_args()
     return args
@@ -54,7 +55,7 @@ if __name__ == '__main__':
     ind_loader = torch.utils.data.DataLoader(dataset=ind_dataset, batch_size=args.bs, pin_memory=True, num_workers=8, shuffle=False)
     ood_loader = torch.utils.data.DataLoader(dataset=ood_dataset, batch_size=args.bs, pin_memory=True, num_workers=8, shuffle=False)
 
-    model = get_model(args, pretrain=True).to(device)
+    model = get_model(args, pretrain=False).to(device)
     model.eval()
     
     ind_scores, ood_scores = None, None
@@ -114,7 +115,7 @@ if __name__ == '__main__':
             print("load train_logits")
         else:
             train_data, _ = get_dataset(args.ind_dataset)
-            train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=True, num_workers=2)
+            train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=True, num_workers=8)
             train_logits = get_logits(model, train_loader, args, device)
             train_logits = torch.from_numpy(train_logits)
             np.savetxt(file_logits, train_logits)

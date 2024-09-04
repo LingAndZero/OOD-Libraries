@@ -3,12 +3,12 @@ import torch.nn.functional as F
 from tqdm import tqdm
 
 
-def msp_eval(model, data_loader):
+def msp_eval(model, data_loader, device):
     model.eval()
     result = None
 
     for (images, _) in tqdm(data_loader):
-        images = images.cuda()
+        images = images.to(device)
         output = model(images)
 
         smax = (F.softmax(output, dim=1)).data.cpu().numpy()

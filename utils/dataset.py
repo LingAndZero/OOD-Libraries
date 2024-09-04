@@ -58,6 +58,27 @@ def get_dataset(dataset):
     # ood dataset
 
     # small-scale dataset
+    elif dataset == "svhn":
+        from torchvision.datasets import SVHN
+        size = 32
+        transform = transforms.Compose([
+            transforms.Resize([size,size]), 
+            transforms.ToTensor(),
+            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+        ])
+        train_dataset = None
+        test_dataset = SVHN("./data/svhn", split='test', transform=transform, download=True)
+    
+    elif dataset == "dtd":
+        size = 32
+        transform = transforms.Compose([
+            transforms.Resize([size,size]), 
+            transforms.ToTensor(),
+            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+        ])
+        train_dataset = None
+        test_dataset = datasets.ImageFolder(root='./data/dtd/images', transform=transform)
+    
     elif dataset == "iSUN":
         transform = transforms.Compose([
             transforms.ToTensor(),

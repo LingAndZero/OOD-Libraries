@@ -4,12 +4,12 @@ import torch.nn.functional as F
 from tqdm import tqdm
 
 
-def energy_eval(model, data_loader):
+def energy_eval(model, data_loader, device):
     model.eval()
     result = None
 
     for (images, _) in tqdm(data_loader):
-        images = images.cuda()
+        images = images.to(device)
         output = model(images)
 
         output = 1 * torch.logsumexp(output / 1, dim=1).data.cpu().numpy()
