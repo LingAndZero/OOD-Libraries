@@ -135,7 +135,7 @@ if __name__ == '__main__':
         # else:
         #     ood_scores = distil_eval(model, ood_loader, train_logits, args)
         #     np.savetxt(file_path_out, ood_scores, delimiter=' ')
-        ind_scores = distil_eval(model, ind_loader, train_logits, args, device)
+        # ind_scores = distil_eval(model, ind_loader, train_logits, args, device)
         ood_scores = distil_eval(model, ood_loader, train_logits, args, device)
 
     ind_labels = np.ones(ind_scores.shape[0])
