@@ -5,7 +5,6 @@ import argparse
 import os
 import numpy as np
 from ood_methods.Mahalanobis import mahalanobis_eval
-from ood_methods.ReAct import react_eval, get_threshold
 from ood_methods.GradNorm import gradnorm_eval
 
 from ood_methods.Mutation import mutation_eval
@@ -82,20 +81,18 @@ if __name__ == '__main__':
         ood_scores = mahalanobis_eval(model, ood_loader)
 
     elif args.OOD_method == "ReAct":
+        from ood_methods.ReAct import react_eval
+        from ood_methods.ReAct import ReAct
+        react = ReAct(model, device)
 
-        # load ID threshold
-        file_threshold = "result/threshold/{}_{}_in.csv".format(args.ind_dataset, args.model)
-        if os.path.exists(file_threshold):
-            threshold = torch.from_numpy(np.genfromtxt(file_threshold)).to(device)
-            print("load ID threshold")
-        else:    
-            train_data, _ = get_dataset(args.ind_dataset)
-            train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)
-            threshold = get_threshold(model, train_loader, 90)
-            np.savetxt(file_threshold, np.array([threshold]))
+        # step 1: get activation threshold
+        train_data, _ = get_dataset(args.ind_dataset)
+        train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)
+        threshold = react.get_threshold(train_loader)
 
-        ind_scores = react_eval(model, ind_loader, threshold, device)
-        ood_scores = react_eval(model, ood_loader, threshold, device)
+        # step 2: get react score
+        ind_scores = react.eval(ind_loader, threshold)
+        ood_scores = react.eval(ood_loader, threshold)
 
     elif args.OOD_method == "GradNorm":
         ind_scores = gradnorm_eval(model, ind_loader, args, device)

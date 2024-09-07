@@ -9,10 +9,12 @@ class ASH:
         self.model = model
         self.device = device
 
-        # Speical Parameters
-        # temperature
+        '''
+        Speical Parameters:
+            T--Temperature
+            p--Pruning Percentage
+        '''
         self.T = 1
-        # Pruning Percentage
         self.p = 65
 
     def eval(self, data_loader):

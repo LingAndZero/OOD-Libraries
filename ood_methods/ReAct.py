@@ -1,41 +1,47 @@
 import torch
 import numpy as np
-import torch.nn.functional as F
 from tqdm import tqdm
 
 
-def react_eval(model, data_loader, threshold, device):
-    model.eval()
-    result = None
+class ReAct:
 
-    for (images, _) in tqdm(data_loader):
-        images = images.to(device)
-        output = model.forward_threshold(images, threshold)
+    def __init__(self, model, device):
+        self.model = model
+        self.device = device
 
-        output = 1 * torch.logsumexp(output / 1, dim=1).data.cpu().numpy()
+        '''
+        Speical Parameters:
+            T--Temperature
+            p--Truncation Percentage
+        '''
+        self.T = 1
+        self.p = 90
 
-        if result is None:
-            result = output
-        else:
-            result = np.append(result, output)
+    def get_threshold(self, train_loader):
+        self.model.eval()
+        result = []
 
-    return result
+        with torch.no_grad():
+            for (images, _) in tqdm(train_loader):
+                images = images.cuda()
+                output = self.model.compute_threshold(images).data.cpu().numpy()
 
+                result.append(output)
 
-def get_threshold(model, train_loader, p):
-    model.eval()
-    result = None
+        threshold = np.percentile(np.concatenate(result), self.p)
 
-    with torch.no_grad():
-        for (images, _) in tqdm(train_loader):
-            images = images.cuda()
-            output = model.compute_threshold(images).data.cpu().numpy()
+        return threshold
 
-            if result is None:
-                result = output
-            else:
-                result = np.append(result, output)
+    def eval(self, data_loader, threshold):
+        self.model.eval()
+        result = []
 
-    threshold = np.percentile(result, p)
+        for (images, _) in tqdm(data_loader):
+            images = images.to(self.device)
+            output = self.model.forward_threshold(images, threshold)
 
-    return threshold
+            output = self.T * torch.logsumexp(output / self.T, dim=1).data.cpu().numpy()
+
+            result.append(output)
+
+        return np.concatenate(result)

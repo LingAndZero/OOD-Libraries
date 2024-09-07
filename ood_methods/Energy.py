@@ -10,8 +10,10 @@ class Energy:
         self.model = model
         self.device = device
 
-        # Speical Parameters
-        # temperature
+        '''
+        Speical Parameters:
+            T--Temperature
+        '''
         self.T = 1
 
     def eval(self, data_loader):
