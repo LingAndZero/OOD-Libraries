@@ -83,7 +83,6 @@ if __name__ == '__main__':
         ood_scores = mahalanobis_eval(model, ood_loader)
 
     elif args.OOD_method == "ReAct":
-        from ood_methods.ReAct import react_eval
         from ood_methods.ReAct import ReAct
         react = ReAct(model, device)
 
@@ -91,7 +90,7 @@ if __name__ == '__main__':
         train_data, _ = get_dataset(args.ind_dataset)
         train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)
         threshold = react.get_threshold(train_loader)
-
+        
         # step 2: get react score
         ind_scores = react.eval(ind_loader, threshold)
         ood_scores = react.eval(ood_loader, threshold)
