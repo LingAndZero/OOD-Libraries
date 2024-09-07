@@ -62,6 +62,14 @@ if __name__ == '__main__':
         ind_scores = msp.eval(ind_loader)
         ood_scores = msp.eval(ood_loader)
 
+    elif args.OOD_method == "ODIN":
+        from ood_methods.ODIN import ODIN
+        odin = ODIN(model, device)
+
+        # step 1: get odin score
+        ind_scores = odin.eval(ind_loader)
+        ood_scores = odin.eval(ood_loader)
+
     elif args.OOD_method == "Energy":
         from ood_methods.Energy import Energy
         energy = Energy(model, device)
@@ -69,12 +77,6 @@ if __name__ == '__main__':
         # step 1: get energy score
         ind_scores = energy.eval(ind_loader)
         ood_scores = energy.eval(ood_loader)
-
-    elif args.OOD_method == "ODIN":
-        from ood_methods.ODIN import odin_eval
-
-        ind_scores = odin_eval(model, ind_loader, device)
-        ood_scores = odin_eval(model, ood_loader, device)
 
     elif args.OOD_method == "Mahalanobis":
         ind_scores = mahalanobis_eval(model, ind_loader)
