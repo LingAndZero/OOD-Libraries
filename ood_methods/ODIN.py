@@ -5,12 +5,12 @@ import numpy as np
 from tqdm import tqdm
 
 
-def odin_eval(model, data_loader):
+def odin_eval(model, data_loader, device):
     model.eval()
     output = None
 
-    for (images, labels) in tqdm(data_loader):
-        images = Variable(images.cuda(), requires_grad=True)
+    for (images, _) in tqdm(data_loader):
+        images = Variable(images.to(device), requires_grad=True)
         a = model(images)
         odin_score = ODIN(images, a, model, 1000.0, 0.005)
         result = np.max(odin_score, 1)

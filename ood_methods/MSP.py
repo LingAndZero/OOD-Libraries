@@ -3,20 +3,23 @@ import torch.nn.functional as F
 from tqdm import tqdm
 
 
-def msp_eval(model, data_loader, device):
-    model.eval()
-    result = None
+class MSP:
 
-    for (images, _) in tqdm(data_loader):
-        images = images.to(device)
-        output = model(images)
+    def __init__(self, model, device):
+        self.model = model
+        self.device = device
 
-        smax = (F.softmax(output, dim=1)).data.cpu().numpy()
-        output = np.max(smax, axis=1)
+    def eval(self, data_loader):
+        self.model.eval()
+        result = []
 
-        if result is None:
-            result = output
-        else:
-            result = np.append(result, output)
+        for (images, _) in tqdm(data_loader):
+            images = images.to(self.device)
+            output = self.model(images)
 
-    return result
+            smax = (F.softmax(output, dim=1)).data.cpu().numpy()
+            output = np.max(smax, axis=1)
+
+            result.append(output)
+
+        return np.concatenate(result)

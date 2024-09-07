@@ -4,19 +4,26 @@ import torch.nn.functional as F
 from tqdm import tqdm
 
 
-def energy_eval(model, data_loader, device):
-    model.eval()
-    result = None
+class Energy:
 
-    for (images, _) in tqdm(data_loader):
-        images = images.to(device)
-        output = model(images)
+    def __init__(self, model, device):
+        self.model = model
+        self.device = device
 
-        output = 1 * torch.logsumexp(output / 1, dim=1).data.cpu().numpy()
+        # Speical Parameters
+        # temperature
+        self.T = 1
 
-        if result is None:
-            result = output
-        else:
-            result = np.append(result, output)
+    def eval(self, data_loader):
+        self.model.eval()
+        result = []
 
-    return result
+        for (images, _) in tqdm(data_loader):
+            images = images.to(self.device)
+            output = self.model(images)
+
+            output = self.T * torch.logsumexp(output / self.T, dim=1).data.cpu().numpy()
+
+            result.append(output)
+
+        return np.concatenate(result)
