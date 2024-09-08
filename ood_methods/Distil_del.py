@@ -48,7 +48,7 @@ def DISTIL(origin_data, model, args, device):
 
         norm = torch.norm(noise, dim=[1,2,3], p=1).detach().cpu().numpy()
         score = [-max(x, y) for x, y in zip(score, norm)]
-        # print(torch.norm(noise, dim=[1,2,3], p=1))
+        print(torch.norm(noise, dim=[1,2,3], p=1))
 
     print(score)
     return np.array(score)
