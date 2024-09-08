@@ -8,7 +8,7 @@
 | [NAP](#nap) | - | - | ![Static Badge](https://img.shields.io/badge/2023-CVPR-brightgreen?style=for-the-badge) |
 | [KNN](#knn) | - | - | ![Static Badge](https://img.shields.io/badge/2022-ICML-orange?style=for-the-badge) |
 | [ASH](#ash) | - | [ASH.py](ood_methods/ASH.py) | ![Static Badge](https://img.shields.io/badge/2022-ICLR-4bb2ff?style=for-the-badge) |
-| [DICE](#dice) | - | - | ![Static Badge](https://img.shields.io/badge/2022-ECCV-pink?style=for-the-badge) |
+| [DICE](#dice) | - | [DICE.py](ood_methods/DICE.py) | ![Static Badge](https://img.shields.io/badge/2022-ECCV-pink?style=for-the-badge) |
 | [ReAct](#react) | - | [ReAct.py](ood_methods/ReAct.py) | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) |
 | [GradNorm](#gradnorm) | - | [GradNorm.py](ood_methods/GradNorm.py) | ![Static Badge](https://img.shields.io/badge/2021-NeurIPS-8A2BE2?style=for-the-badge) |
 | [Energy](#energy) | - | [Energy.py](ood_methods/Energy.py) | ![Static Badge](https://img.shields.io/badge/2020-NeurIPS-8A2BE2?style=for-the-badge) |

@@ -1,18 +1,10 @@
-import torch
+import numpy as np
 
-# 创建一个示例张量
-x = torch.tensor([[1, 2, 3],
-                  [4, 5, 6],
-                  [7, 8, 9], 
-                  [1, 2, 3],
-                  [4, 5, 6],
-                  [7, 8, 9]])
+# 创建一个 50000*512 的随机数组
+array = np.random.rand(5, 3)
 
-# 沿着第一个维度（行）翻转张量
-flipped_x = torch.flip(x, dims=[2])
+print(array)
+# 计算每列的平均值
+mean_array = np.mean(array, axis=0)
 
-print("原始张量:")
-print(x)
-
-print("\n翻转后的张量:")
-print(flipped_x)
+print(mean_array)  # 输出应为 (512,)

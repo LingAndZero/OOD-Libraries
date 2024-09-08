@@ -4,8 +4,6 @@ import torch.nn as nn
 import argparse
 import os
 import numpy as np
-from ood_methods.Mahalanobis import mahalanobis_eval
-from ood_methods.GradNorm import gradnorm_eval
 
 from ood_methods.Mutation import mutation_eval
 from ood_methods.Distil_del import distil_eval
@@ -79,6 +77,7 @@ if __name__ == '__main__':
         ood_scores = energy.eval(ood_loader)
 
     elif args.OOD_method == "Mahalanobis":
+        from ood_methods.Mahalanobis import mahalanobis_eval
         ind_scores = mahalanobis_eval(model, ind_loader)
         ood_scores = mahalanobis_eval(model, ood_loader)
 
@@ -90,14 +89,31 @@ if __name__ == '__main__':
         train_data, _ = get_dataset(args.ind_dataset)
         train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)
         threshold = react.get_threshold(train_loader)
-        
+
         # step 2: get react score
         ind_scores = react.eval(ind_loader, threshold)
         ood_scores = react.eval(ood_loader, threshold)
+    
+    elif args.OOD_method == "DICE":
+        from ood_methods.DICE import DICE
+        dice = DICE(model, device)
+
+        # step 1: get masking matrix
+        train_data, _ = get_dataset(args.ind_dataset)
+        train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)
+        dice.get_mask(train_loader, args.num_classes)
+
+        # step 2: get DICE score
+        ind_scores = dice.eval(ind_loader)
+        ood_scores = dice.eval(ood_loader)
 
     elif args.OOD_method == "GradNorm":
-        ind_scores = gradnorm_eval(model, ind_loader, args, device)
-        ood_scores = gradnorm_eval(model, ood_loader, args, device)
+        from ood_methods.GradNorm import GradNorm
+        gradnorm = GradNorm(model, device)
+
+        # step 1: get gradnorm score
+        ind_scores = gradnorm.eval(ind_loader, args.num_classes)
+        ood_scores = gradnorm.eval(ood_loader, args.num_classes)
 
     elif args.OOD_method == "ASH":
         from ood_methods.ASH import ASH
@@ -106,6 +122,21 @@ if __name__ == '__main__':
         # step 1: get ash score
         ind_scores = ash.eval(ind_loader)
         ood_scores = ash.eval(ood_loader)
+
+    elif args.OOD_method == "OE":
+        from ood_methods.OE import OE
+        oe = OE(model, device)
+
+        # step 1: fine-tuning the model
+        ID_data, _ = get_dataset(args.ind_dataset)
+        ID_loader = torch.utils.data.DataLoader(ID_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)
+        OOD_data, _ = get_dataset(args.ind_dataset)
+        OOD_loader = torch.utils.data.DataLoader(OOD_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)  
+        oe.fineTuning(ID_loader, OOD_loader)
+
+        # step 2: get oe score
+        ind_scores = oe.eval(ind_loader)
+        ood_scores = oe.eval(ood_loader)
 
 
     elif args.OOD_method == "Mutation":

@@ -96,23 +96,21 @@ if __name__ == '__main__':
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
     scheduler = MultiStepLR(optimizer, milestones=[50, 75, 90], gamma=0.1)
 
-    # save_path = './checkpoints/' + args.ind_dataset + '-' + args.model + '-' + str(args.random_seed)
-    # os.makedirs(save_path, exist_ok=True)
-    # saver = timm.utils.CheckpointSaver(model, optimizer, checkpoint_dir=save_path, max_history=1)  
+    save_path = './checkpoints/' + args.ind_dataset + '-' + args.model + '-' + str(args.random_seed)
+    os.makedirs(save_path, exist_ok=True)
+    saver = timm.utils.CheckpointSaver(model, optimizer, checkpoint_dir=save_path, max_history=1)  
 
     for epoch in tqdm(range(args.epoch)):
         model.train()
         print("epoch: {}".format(epoch))
         for batch_idx, (data, labels) in enumerate(train_loader):
             data, labels = data.to(device), labels.to(device)
-            print(labels)
-            print(labels.shape)
             optimizer.zero_grad()
             output = model(data)
             loss = criterion(output, labels)
             loss.backward()
             optimizer.step()
 
-        # valid_accuracy = test(model, test_loader, device)
-        # scheduler.step()
-        # saver.save_checkpoint(epoch, metric=valid_accuracy)
+        valid_accuracy = test(model, test_loader, device)
+        scheduler.step()
+        saver.save_checkpoint(epoch, metric=valid_accuracy)
