@@ -11,7 +11,7 @@ class Energy:
         self.device = device
 
         '''
-        Speical Parameters:
+        Special Parameters:
             T--Temperature
         '''
         self.T = 1

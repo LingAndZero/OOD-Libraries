@@ -10,7 +10,7 @@ class GradNorm:
         self.model = model
         self.device = device
         '''
-        Speical Parameters:
+        Special Parameters:
             T--Temperature
         '''
         self.T = 1

@@ -10,7 +10,7 @@ class ReAct:
         self.device = device
 
         '''
-        Speical Parameters:
+        Special Parameters:
             T--Temperature
             p--Truncation Percentage
         '''

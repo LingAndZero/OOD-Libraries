@@ -12,7 +12,7 @@ class ODIN:
         self.device = device
 
         '''
-        Speical Parameters:
+        Special Parameters:
             T--Temperature
             epsilon--Perturbation Magnitude
         '''

@@ -10,7 +10,7 @@ class DICE:
         self.device = device
 
         '''
-        Speical Parameters:
+        Special Parameters:
             T--Temperature
             p--Sparsity Parameter
         '''
