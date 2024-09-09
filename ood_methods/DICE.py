@@ -19,8 +19,8 @@ class DICE:
 
     def get_mask(self, train_loader, num_classes):
         self.model.eval()
-        linear_weights = self.model.linear.weight.data
-        result = [[] for i in range(num_classes)]
+        linear_weights = self.model.fc.weight.data
+        result = torch.zeros(train_loader.batch_size, num_classes, linear_weights.size(1)).to(self.device)
 
         with torch.no_grad():
             for (images, _) in tqdm(train_loader):
@@ -28,16 +28,15 @@ class DICE:
                 output = self.model.feature(images)
                 output = output.view(output.size(0), -1)
                 
-                for c in range(num_classes):
-                    result[c].append((output * linear_weights[c]).cpu())
+                class_result = linear_weights.unsqueeze(0) * output.unsqueeze(1)
+                result += class_result
         
-        for c in range(num_classes):
-            result[c] = np.mean(np.concatenate(result[c]), axis=0)
+        result = torch.sum(result, dim=0).cpu() / len(train_loader.dataset)
 
         threshold = np.percentile(np.array(result).flatten(), self.p)
         mask = result > threshold
-        mask = torch.tensor(mask).to(self.device)
-        self.model.linear.weight.data *= mask
+        mask = mask.to(self.device)
+        self.model.fc.weight.data *= mask
 
     def eval(self, data_loader):
         self.model.eval()

@@ -155,6 +155,11 @@ class AbstractResNet(nn.Module):
         x = self.fc(x)
         return x
 
+    def feature(self, x):
+        x = self.features(x)
+        x = self.avgpool(x)
+        return x
+    
     # for ReAct
     def compute_threshold(self, x):
         x = self.features(x)
