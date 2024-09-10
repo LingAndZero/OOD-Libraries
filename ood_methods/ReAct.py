@@ -41,7 +41,7 @@ class ReAct:
             output = self.model.feature(images)
             output = output.view(output.size(0), -1)
             output = output.clip(max=threshold)
-            output = self.model.linear(output)
+            output = self.model.fc(output)
 
             output = self.T * torch.logsumexp(output / self.T, dim=1).data.cpu().numpy()
 

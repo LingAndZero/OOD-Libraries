@@ -46,16 +46,20 @@ def DISTIL(origin_data, model, logits, args, device):
     p_labels = outputs.argmax(1)
     p_labels = p_labels.data.cpu()
 
+    p_score = outputs.max(1)[0].detach().cpu()
+
     # # get CAM
-    with EigenCAM(model=model, target_layers=[model.layer4]) as cam:
+    with EigenCAM(model=model, target_layers=[model.dense3]) as cam:
         cam.batch_size = origin_data.size()[0]
         grayscale_cam = cam(input_tensor=origin_data, aug_smooth=False, eigen_smooth=False)
     
     grayscale_cam = torch.from_numpy(grayscale_cam).to(device)
     grayscale_cam = grayscale_cam.unsqueeze(1).expand(-1, 3, -1, -1).cpu()
 
-    # get base logits
+    # get base logits & mean logit
     base_logits = None
+    mean_logits = logits.mean(0, keepdim=True).to(device)
+
     for i in range(origin_data.shape[0]):
 
         if base_logits is None:
@@ -68,40 +72,33 @@ def DISTIL(origin_data, model, logits, args, device):
     noise = torch.zeros(origin_data.size()[0], 3, 32, 32).to(device)
     noise = nn.Parameter(noise, requires_grad=True)
     optimizer = torch.optim.Adam([noise], lr=0.01)
-    scheduler = CosineAnnealingLR(optimizer, T_max=30)
-    
-    final_loss = None
 
-    for iters in range(30):
+    for iters in range(50):
         optimizer.zero_grad()
 
         tmp_pred = model.forward_noise(origin_data, noise)
-        loss_batch, total_loss = kl_divergence(F.softmax(base_logits / 100, dim=1), F.softmax(tmp_pred / 100, dim=1))
+
+        _, loss1 = kl_divergence(F.softmax(base_logits / 100, dim=1), F.softmax(tmp_pred / 100, dim=1))
+        _, loss2 = kl_divergence(F.softmax(mean_logits / 100, dim=1), F.softmax(tmp_pred / 100, dim=1))
 
         flip = transforms.RandomHorizontalFlip(p=1)
         tmp_pred = model.forward_noise(flip(origin_data), flip(noise))
-        loss_b, loss = kl_divergence(F.softmax(base_logits / 100, dim=1), F.softmax(tmp_pred / 100, dim=1))
+
+        _, loss3 = kl_divergence(F.softmax(base_logits / 100, dim=1), F.softmax(tmp_pred / 100, dim=1))
+        _, loss4 = kl_divergence(F.softmax(mean_logits / 100, dim=1), F.softmax(tmp_pred / 100, dim=1))
+
         
-        loss_batch += loss_b
-        final_loss = loss_batch
-        total_loss += loss
-
+        total_loss = loss1 + loss3 - 0.1 * loss2 - 0.1 * loss4
         total_loss.backward()
-        # print(loss_batch)
 
-        # torch.nn.utils.clip_grad_norm_(noise, 1e-2)
         optimizer.step()
-        scheduler.step()
 
-    final_loss = torch.abs(final_loss).detach().cpu()
-    print(final_loss)
     noise = noise.detach().cpu()
     noise = (1 + grayscale_cam) * noise
 
     for idx in range(origin_data.shape[0]):
         # print((final_loss[idx] * final_loss[idx] * torch.norm(noise[idx], p=2) * 1e7).cpu())
-        # score.append(-(final_loss[idx] * torch.norm(noise[idx], p=2)).cpu())
-        score.append(-final_loss[idx].cpu())
+        score.append(-(torch.norm(noise[idx] / p_score[idx], p=2)).cpu())
         
 
     return np.array(score)
@@ -133,6 +130,27 @@ def get_logits(model, data_loader, args, device, mode="train"):
         logits.append(tmp)
     
     return np.array(logits)
+
+
+def get_features(model, data_loader, args, device, mode="train"):
+    model.eval()
+    result = [[] for i in range(args.num_classes)]
+
+    with torch.no_grad():
+        for (images, labels) in tqdm(data_loader):
+            images, labels = images.to(device), labels.to(device)
+            output = model.feature(images)
+
+            output = output.data.cpu().numpy()
+            for i in range(labels.size(0)):
+                result[labels[i]].append(output[i])
+
+    features = []
+    for i in range(args.num_classes):
+        tmp = np.mean(result[i], axis=0)
+        features.append(tmp)
+    
+    return np.array(features)
 
 
 def kl_divergence(p, q):
