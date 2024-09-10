@@ -2,4 +2,4 @@ data
 nohup.out
 checkpoints
 result
-ood_methods
+ood_methods/Distil.py
