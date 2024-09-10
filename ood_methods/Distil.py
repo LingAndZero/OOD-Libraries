@@ -47,7 +47,7 @@ def DISTIL(origin_data, model, logits, args, device):
     p_labels = p_labels.data.cpu()
 
     p_score = outputs.max(1)[0].detach().cpu()
-
+    111
     # # get CAM
     with EigenCAM(model=model, target_layers=[model.dense3]) as cam:
         cam.batch_size = origin_data.size()[0]
