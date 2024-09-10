@@ -19,7 +19,7 @@ class DICE:
 
     def get_mask(self, train_loader, num_classes):
         self.model.eval()
-        linear_weights = self.model.fc.weight.data
+        linear_weights = self.model.classifier.weight.data
         result = torch.zeros(train_loader.batch_size, num_classes, linear_weights.size(1)).to(self.device)
 
         with torch.no_grad():
@@ -36,7 +36,7 @@ class DICE:
         threshold = np.percentile(np.array(result).flatten(), self.p)
         mask = result > threshold
         mask = mask.to(self.device)
-        self.model.fc.weight.data *= mask
+        self.model.classifier.weight.data *= mask
 
     def eval(self, data_loader):
         self.model.eval()

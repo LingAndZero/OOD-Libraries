@@ -17,7 +17,7 @@ def get_eval_options():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--ind_dataset", type=str, default="cifar10")
-    parser.add_argument("--ood_dataset", type=str, default="dtd")
+    parser.add_argument("--ood_dataset", type=str, default="iSUN")
     parser.add_argument("--model", type=str, default="DenseNet")
     parser.add_argument("--gpu", type=int, default=0)
     parser.add_argument('--num_classes', type=int, default=10)
