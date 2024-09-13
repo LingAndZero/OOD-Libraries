@@ -4,6 +4,7 @@ from models.ResNet import resnet50
 from models.DenseNet import *
 from models.WideResNet import *
 from models.VGG import *
+from models.MobileNetv2 import *
 
 
 def get_model(args, pretrain=False):
@@ -23,6 +24,9 @@ def get_model(args, pretrain=False):
 
     elif args.model == "VGG":
         model = VGG('VGG11')
+
+    elif args.model == "MobileNetv2":
+        model = MobileNetV2()
 
     if pretrain:
         save_path = './checkpoints/' + args.ind_dataset + '-' + args.model + '-0'

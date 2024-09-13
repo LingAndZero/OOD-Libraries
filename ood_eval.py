@@ -18,13 +18,13 @@ def get_eval_options():
 
     parser.add_argument("--ind_dataset", type=str, default="cifar10")
     parser.add_argument("--ood_dataset", type=str, default="iSUN")
-    parser.add_argument("--model", type=str, default="DenseNet")
+    parser.add_argument("--model", type=str, default="ResNet")
     parser.add_argument("--gpu", type=int, default=0)
     parser.add_argument('--num_classes', type=int, default=10)
 
     parser.add_argument("--random_seed", type=int, default=0)
-    parser.add_argument("--bs", type=int, default=128)
-    parser.add_argument("--OOD_method", type=str, default="MSP")
+    parser.add_argument("--bs", type=int, default=512)
+    parser.add_argument("--OOD_method", type=str, default="Distil")
 
     args = parser.parse_args()
     return args
@@ -128,20 +128,13 @@ if __name__ == '__main__':
         ID_data, _ = get_dataset(args.ind_dataset)
         ID_loader = torch.utils.data.DataLoader(ID_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)
         OOD_data, _ = get_dataset(args.ind_dataset)
-        OOD_loader = torch.utils.data.DataLoader(OOD_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)  
+        OOD_loader = torch.utils.data.DataLoader(OOD_data, batch_size=512, pin_memory=True, shuffle=False, num_workers=8)  
         oe.fineTuning(ID_loader, OOD_loader)
 
         # step 2: get oe score
         ind_scores = oe.eval(ind_loader)
         ood_scores = oe.eval(ood_loader)
 
-
-    elif args.OOD_method == "CAM":
-        from ood_methods.CAM import CAM
-        cam = CAM(model, device)
-
-        ind_scores = cam.eval(ind_loader)
-        ood_scores = cam.eval(ood_loader)
 
     elif args.OOD_method == "Distil":
         from ood_methods.Distil import distil_eval, get_logits
@@ -159,25 +152,24 @@ if __name__ == '__main__':
             train_logits = torch.from_numpy(train_logits)
             np.savetxt(file_logits, train_logits)
         
+        # file_path_in = "result/{}_{}_{}_in.csv".format(args.OOD_method, args.ind_dataset, args.model)
+        # if os.path.exists(file_path_in):
+        #    ind_scores = np.genfromtxt(file_path_in, delimiter=' ')
+        #    print("load ind-scores")
+        # else:
+        #    ind_scores = distil_eval(model, ind_loader, train_logits, args, device)
+        #    np.savetxt(file_path_in, ind_scores, delimiter=' ')
 
-        file_path_in = "result/{}_{}_{}_in.csv".format(args.OOD_method, args.ind_dataset, args.model)
-        if os.path.exists(file_path_in):
-           ind_scores = np.genfromtxt(file_path_in, delimiter=' ')
-           print("load ind-scores")
-        else:
-           ind_scores = distil_eval(model, ind_loader, train_logits, args, device)
-           np.savetxt(file_path_in, ind_scores, delimiter=' ')
+        # file_path_out = "result/{}_{}_{}_{}_out.csv".format(args.OOD_method, args.ind_dataset, args.ood_dataset, args.model)
+        # if os.path.exists(file_path_out):
+        #     ood_scores = np.genfromtxt(file_path_out, delimiter=' ')
+        #     print("load ood-scores")
+        # else:
+        #     ood_scores = distil_eval(model, ood_loader, train_logits, args, device)
+        #     np.savetxt(file_path_out, ood_scores, delimiter=' ')
 
-        file_path_out = "result/{}_{}_{}_{}_out.csv".format(args.OOD_method, args.ind_dataset, args.ood_dataset, args.model)
-        if os.path.exists(file_path_out):
-            ood_scores = np.genfromtxt(file_path_out, delimiter=' ')
-            print("load ood-scores")
-        else:
-            ood_scores = distil_eval(model, ood_loader, train_logits, args, device)
-            np.savetxt(file_path_out, ood_scores, delimiter=' ')
-
-        # ind_scores = distil_eval(model, ind_loader, train_logits, args, device)
-        # ood_scores = distil_eval(model, ood_loader, train_logits, args, device)
+        ind_scores = distil_eval(model, ind_loader, train_logits, args, device)
+        ood_scores = distil_eval(model, ood_loader, train_logits, args, device)
 
     ind_labels = np.ones(ind_scores.shape[0])
     ood_labels = np.zeros(ood_scores.shape[0])

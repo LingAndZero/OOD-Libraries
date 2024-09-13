@@ -1,7 +1,7 @@
 from torchvision import datasets, transforms
 # import os
 
-def get_dataset(dataset):
+def get_dataset(dataset, mode="test"):
 
     train_dataset = None
     test_dataset = None
@@ -12,13 +12,20 @@ def get_dataset(dataset):
     if dataset == "cifar10":
         from torchvision.datasets import CIFAR10
         size = 32
-        train_transform = transforms.Compose([
-            transforms.Resize([size,size]), 
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomCrop(size, padding=4),
-            transforms.ToTensor(),
-            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
-        ])
+        if mode == "test":
+            train_transform = transforms.Compose([
+                transforms.Resize([size,size]), 
+                transforms.ToTensor(),
+                transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+            ])
+        else:
+            train_transform = transforms.Compose([
+                transforms.Resize([size,size]), 
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomCrop(size, padding=4),
+                transforms.ToTensor(),
+                transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+            ])
         test_transform = transforms.Compose([
             transforms.Resize([size,size]), 
             transforms.ToTensor(),

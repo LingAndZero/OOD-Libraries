@@ -31,8 +31,7 @@ class ASH:
             # output = ash_s(feature, self.p)
 
             output = output.view(output.size(0), -1)
-            output = self.model.classifier(output)
-
+            output = self.model.fc(output)
             output = self.T * torch.logsumexp(output / self.T, dim=1).data.cpu().numpy()
 
             result.append(output)
