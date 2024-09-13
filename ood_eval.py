@@ -5,8 +5,6 @@ import argparse
 import os
 import numpy as np
 
-# from ood_methods.Mutation import mutation_eval
-
 from utils.utils import fix_random_seed
 from utils.dataset import get_dataset
 from utils.models import get_model
@@ -17,7 +15,7 @@ def get_eval_options():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--ind_dataset", type=str, default="cifar10")
-    parser.add_argument("--ood_dataset", type=str, default="iSUN")
+    parser.add_argument("--ood_dataset", type=str, default="svhn")
     parser.add_argument("--model", type=str, default="ResNet")
     parser.add_argument("--gpu", type=int, default=0)
     parser.add_argument('--num_classes', type=int, default=10)
@@ -137,20 +135,28 @@ if __name__ == '__main__':
 
 
     elif args.OOD_method == "Distil":
-        from ood_methods.Distil import distil_eval, get_logits
+        from ood_methods.Distil import Distil
 
-        file_logits = "result/logits/{}_{}_in.csv".format(args.ind_dataset, args.model)
+        distil = Distil(model, device)
+        train_data, _ = get_dataset(args.ind_dataset)
+        train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=True, num_workers=8)
+        
+        logits = torch.from_numpy(distil.get_logits(train_loader, args.num_classes))
+        ind_scores = distil.eval(ind_loader, logits)
+        ood_scores = distil.eval(ood_loader, logits)
 
-        # load training logits
-        if os.path.exists(file_logits):
-            train_logits = torch.from_numpy(np.genfromtxt(file_logits))
-            print("load train_logits")
-        else:
-            train_data, _ = get_dataset(args.ind_dataset)
-            train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=True, num_workers=8)
-            train_logits = get_logits(model, train_loader, args, device)
-            train_logits = torch.from_numpy(train_logits)
-            np.savetxt(file_logits, train_logits)
+        # file_logits = "result/logits/{}_{}_in.csv".format(args.ind_dataset, args.model)
+
+        # # load training logits
+        # if os.path.exists(file_logits):
+        #     train_logits = torch.from_numpy(np.genfromtxt(file_logits))
+        #     print("load train_logits")
+        # else:
+        #     train_data, _ = get_dataset(args.ind_dataset)
+        #     train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=True, num_workers=8)
+        #     train_logits = get_logits(model, train_loader, args, device)
+        #     train_logits = torch.from_numpy(train_logits)
+        #     np.savetxt(file_logits, train_logits)
         
         # file_path_in = "result/{}_{}_{}_in.csv".format(args.OOD_method, args.ind_dataset, args.model)
         # if os.path.exists(file_path_in):
@@ -168,8 +174,8 @@ if __name__ == '__main__':
         #     ood_scores = distil_eval(model, ood_loader, train_logits, args, device)
         #     np.savetxt(file_path_out, ood_scores, delimiter=' ')
 
-        ind_scores = distil_eval(model, ind_loader, train_logits, args, device)
-        ood_scores = distil_eval(model, ood_loader, train_logits, args, device)
+        # ind_scores = distil_eval(model, ind_loader, train_logits, args, device)
+        # ood_scores = distil_eval(model, ood_loader, train_logits, args, device)
 
     ind_labels = np.ones(ind_scores.shape[0])
     ood_labels = np.zeros(ood_scores.shape[0])
