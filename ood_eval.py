@@ -14,14 +14,14 @@ from utils.metrics import cal_metric
 def get_eval_options():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--ind_dataset", type=str, default="cifar10")
-    parser.add_argument("--ood_dataset", type=str, default="svhn")
+    parser.add_argument("--ind_dataset", type=str, default="ImageNet")
+    parser.add_argument("--ood_dataset", type=str, default="iNat")
     parser.add_argument("--model", type=str, default="ResNet")
     parser.add_argument("--gpu", type=int, default=0)
-    parser.add_argument('--num_classes', type=int, default=10)
+    parser.add_argument('--num_classes', type=int, default=1000)
 
     parser.add_argument("--random_seed", type=int, default=0)
-    parser.add_argument("--bs", type=int, default=512)
+    parser.add_argument("--bs", type=int, default=64)
     parser.add_argument("--OOD_method", type=str, default="Distil")
 
     args = parser.parse_args()
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     ind_loader = torch.utils.data.DataLoader(dataset=ind_dataset, batch_size=args.bs, pin_memory=True, num_workers=8, shuffle=False)
     ood_loader = torch.utils.data.DataLoader(dataset=ood_dataset, batch_size=args.bs, pin_memory=True, num_workers=8, shuffle=False)
 
-    model = get_model(args, pretrain=True).to(device)
+    model = get_model(args).to(device)
     model.eval()
     
     ind_scores, ood_scores = None, None
@@ -134,14 +134,43 @@ if __name__ == '__main__':
         ood_scores = oe.eval(ood_loader)
 
 
+    elif args.OOD_method == "COS":
+        from ood_methods.COS import COS
+        cos = COS(model, device)
+
+        # load training features
+        file_features = "result/features/{}_{}_in.csv".format(args.ind_dataset, args.model)
+
+        if os.path.exists(file_features):
+            features = torch.from_numpy(np.genfromtxt(file_features))
+            print("load train features")
+        else:
+            train_data, _ = get_dataset(args.ind_dataset)
+            train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)
+            features = torch.from_numpy(cos.get_features(train_loader, args.num_classes))
+            np.savetxt(file_features, features)
+        
+        ind_scores = cos.eval(ind_loader, features)
+        ood_scores = cos.eval(ood_loader, features)
+
+
     elif args.OOD_method == "Distil":
         from ood_methods.Distil import Distil
 
         distil = Distil(model, device)
-        train_data, _ = get_dataset(args.ind_dataset)
-        train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=True, num_workers=8)
-        
-        logits = torch.from_numpy(distil.get_logits(train_loader, args.num_classes))
+
+        # load training logits
+        file_logits = "result/logits/{}_{}_in.csv".format(args.ind_dataset, args.model)
+
+        if os.path.exists(file_logits):
+            logits = torch.from_numpy(np.genfromtxt(file_logits))
+            print("load train logits")
+        else:
+            train_data, _ = get_dataset(args.ind_dataset)
+            train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)
+            logits = torch.from_numpy(distil.get_logits(train_loader, args.num_classes))
+            np.savetxt(file_logits, logits)
+                              
         ind_scores = distil.eval(ind_loader, logits)
         ood_scores = distil.eval(ood_loader, logits)
 

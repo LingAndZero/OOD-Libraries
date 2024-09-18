@@ -21,20 +21,21 @@ class ASH:
         self.model.eval()
         result = []
 
-        for (images, _) in tqdm(data_loader):
-            images = images.to(self.device)
-            feature = self.model.feature(images)
+        with torch.no_grad():
+            for (images, _) in tqdm(data_loader):
+                images = images.to(self.device)
+                feature = self.model.feature(images)
 
-            # Three pruning method: ash_p, ash_b, ash_s
-            output = ash_p(feature, self.p)
-            # output = ash_b(feature, self.p)
-            # output = ash_s(feature, self.p)
+                # Three pruning method: ash_p, ash_b, ash_s
+                output = ash_p(feature, self.p)
+                # output = ash_b(feature, self.p)
+                # output = ash_s(feature, self.p)
 
-            output = output.view(output.size(0), -1)
-            output = self.model.fc(output)
-            output = self.T * torch.logsumexp(output / self.T, dim=1).data.cpu().numpy()
+                output = output.view(output.size(0), -1)
+                output = self.model.fc(output)
+                output = self.T * torch.logsumexp(output / self.T, dim=1).data.cpu().numpy()
 
-            result.append(output)
+                result.append(output)
 
         return np.concatenate(result)
 

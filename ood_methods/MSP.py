@@ -1,6 +1,7 @@
 import numpy as np
 import torch.nn.functional as F
 from tqdm import tqdm
+import torch
 
 
 class MSP:
@@ -12,14 +13,15 @@ class MSP:
     def eval(self, data_loader):
         self.model.eval()
         result = []
+        
+        with torch.no_grad():
+            for (images, _) in tqdm(data_loader):
+                images = images.to(self.device)
+                output = self.model(images)
 
-        for (images, _) in tqdm(data_loader):
-            images = images.to(self.device)
-            output = self.model(images)
+                smax = (F.softmax(output, dim=1)).data.cpu().numpy()
+                output = np.max(smax, axis=1)
 
-            smax = (F.softmax(output, dim=1)).data.cpu().numpy()
-            output = np.max(smax, axis=1)
-
-            result.append(output)
+                result.append(output)
 
         return np.concatenate(result)

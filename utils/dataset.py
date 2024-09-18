@@ -1,4 +1,5 @@
 from torchvision import datasets, transforms
+from utils.ImageFolderLMDB import ImageFolderLMDB
 # import os
 
 def get_dataset(dataset, mode="test"):
@@ -58,8 +59,10 @@ def get_dataset(dataset, mode="test"):
             transforms.ToTensor(),
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
         ])
-        train_dataset = datasets.ImageFolder(root='./data/ImageNet-1000/imagenet/train', transform=transform_test_largescale)
-        test_dataset = datasets.ImageFolder(root='./data/ImageNet-1000/imagenet/val', transform=transform_test_largescale)
+        train_dataset = ImageFolderLMDB(db_path='./data/ImageNet-1000/imagenet/train.lmdb', transform=transform_test_largescale)
+        test_dataset = ImageFolderLMDB(db_path='./data/ImageNet-1000/imagenet/val.lmdb', transform=transform_test_largescale)
+        # train_dataset = datasets.ImageFolder(root='./data/ImageNet-1000/imagenet/train', transform=transform_test_largescale)
+        # test_dataset = datasets.ImageFolder(root='./data/ImageNet-1000/imagenet/val', transform=transform_test_largescale)
 
 
     # ood dataset
@@ -139,7 +142,9 @@ def get_dataset(dataset, mode="test"):
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
         ])
         train_dataset = None
-        test_dataset = datasets.ImageFolder(root='./data/iNaturalist', transform=transform_test_largescale)
+        # test_dataset = datasets.ImageFolder(root='./data/iNaturalist', transform=transform_test_largescale)
+        test_dataset = ImageFolderLMDB(db_path='./data/iNaturalist.lmdb', transform=transform_test_largescale)
+
 
     elif dataset == "SUN":
         transform_test_largescale = transforms.Compose([
@@ -149,7 +154,8 @@ def get_dataset(dataset, mode="test"):
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
         ])
         train_dataset = None
-        test_dataset = datasets.ImageFolder(root='./data/SUN', transform=transform_test_largescale)
+        test_dataset = ImageFolderLMDB(db_path='./data/SUN.lmdb', transform=transform_test_largescale)
+
 
     elif dataset == "Places":
         transform_test_largescale = transforms.Compose([
@@ -159,7 +165,7 @@ def get_dataset(dataset, mode="test"):
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
         ])
         train_dataset = None
-        test_dataset = datasets.ImageFolder(root='./data/Places', transform=transform_test_largescale)
+        test_dataset = ImageFolderLMDB(db_path='./data/Places.lmdb', transform=transform_test_largescale)
 
     elif dataset == "Textures":
         transform_test_largescale = transforms.Compose([

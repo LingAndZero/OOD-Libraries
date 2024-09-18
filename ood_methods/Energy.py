@@ -20,12 +20,13 @@ class Energy:
         self.model.eval()
         result = []
 
-        for (images, _) in tqdm(data_loader):
-            images = images.to(self.device)
-            output = self.model(images)
-            
-            output = self.T * torch.logsumexp(output / self.T, dim=1).data.cpu().numpy()
+        with torch.no_grad():
+            for (images, _) in tqdm(data_loader):
+                images = images.to(self.device)
+                output = self.model(images)
+                
+                output = self.T * torch.logsumexp(output / self.T, dim=1).data.cpu().numpy()
 
-            result.append(output)
+                result.append(output)
 
         return np.concatenate(result)

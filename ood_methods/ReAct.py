@@ -36,15 +36,16 @@ class ReAct:
         self.model.eval()
         result = []
 
-        for (images, _) in tqdm(data_loader):
-            images = images.to(self.device)
-            output = self.model.feature(images)
-            output = output.view(output.size(0), -1)
-            output = output.clip(max=threshold)
-            output = self.model.linear(output)
+        with torch.no_grad():
+            for (images, _) in tqdm(data_loader):
+                images = images.to(self.device)
+                output = self.model.feature(images)
+                output = output.view(output.size(0), -1)
+                output = output.clip(max=threshold)
+                output = self.model.linear(output)
 
-            output = self.T * torch.logsumexp(output / self.T, dim=1).data.cpu().numpy()
+                output = self.T * torch.logsumexp(output / self.T, dim=1).data.cpu().numpy()
 
-            result.append(output)
+                result.append(output)
 
         return np.concatenate(result)
