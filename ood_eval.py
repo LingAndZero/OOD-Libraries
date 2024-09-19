@@ -21,7 +21,7 @@ def get_eval_options():
     parser.add_argument('--num_classes', type=int, default=1000)
 
     parser.add_argument("--random_seed", type=int, default=0)
-    parser.add_argument("--bs", type=int, default=64)
+    parser.add_argument("--bs", type=int, default=128)
     parser.add_argument("--OOD_method", type=str, default="Distil")
 
     args = parser.parse_args()

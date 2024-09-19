@@ -38,10 +38,37 @@ class COS:
         
         return np.array(features)
     
+    def get_noise(self, images, p_labels, features):
+        cos_sim = nn.CosineSimilarity(dim=1, eps=1e-6)
+
+        mean_features = features.mean(0, keepdim=True).to(self.device)
+        base_features = None
+
+        base_features = features[p_labels].float().to(self.device)
+        
+        noise = torch.zeros_like(images).to(self.device)
+        noise = nn.Parameter(noise, requires_grad=True)
+        optimizer = torch.optim.Adam([noise], lr=0.01)
+
+        for iters in range(50):
+            optimizer.zero_grad()
+
+            tmp_pred = self.model.feature_noise(images, noise)
+
+            loss1 = torch.sum(cos_sim(base_features, tmp_pred))
+            loss2 = torch.sum(cos_sim(mean_features, tmp_pred))
+
+            total_loss = loss1 - 0.01 * loss2
+            print(total_loss)
+            total_loss.backward()
+            optimizer.step()
+
+        return noise.detach().cpu()
+    
+
     def eval(self, data_loader, features):
         self.model.eval()
-        result = []
-
+        result = [] 
         cos_sim = nn.CosineSimilarity(dim=1, eps=1e-6)
 
         with torch.no_grad():
@@ -49,13 +76,13 @@ class COS:
                 images = images.to(self.device)
                 feature = self.model.feature(images)
                 feature = feature.view(feature.size(0), -1)
-                output = self.model.fc(feature).cpu()
+                output = self.model.fc(feature)
                 p_labels = output.argmax(1).data.cpu()
+                
+                base_feature = features[p_labels].to(self.device)
+                h = cos_sim(feature, base_feature)
 
-                base_features = features[p_labels].to(self.device)
-                cosine_similarity = cos_sim(base_features, feature).cpu()
-                result.append(cosine_similarity)
-
+                result.append(h.cpu())
         print(result)
         return np.concatenate(result)
 

@@ -160,21 +160,6 @@ class AbstractResNet(nn.Module):
         x = self.avgpool(x)
         return x
     
-    # for ReAct
-    def compute_threshold(self, x):
-        x = self.features(x)
-        x = self.avgpool(x)
-        x = x.view(x.size(0), -1)
-        return x
-
-    def forward_threshold(self, x, threshold=1e10):
-        x = self.features(x)
-        x = self.avgpool(x)
-        x = x.view(x.size(0), -1)
-        x = x.clip(max=threshold)
-        x = self.fc(x)
-        return x
-    
     # for Distil
     def forward_noise(self, x, noise):
         x = self.features(x + noise)
@@ -183,13 +168,10 @@ class AbstractResNet(nn.Module):
         x = self.fc(x)
         return x
     
-    # for ASH
-    def ash_forward(self, x):
-        x = self.features(x)
+    def feature_noise(self, x, noise):
+        x = self.features(x + noise)
         x = self.avgpool(x)
-        x = ash_p(x)
         x = x.view(x.size(0), -1)
-        x = self.fc(x)
         return x
 
     def load_state_dict(self, state_dict, strict=True):
