@@ -1,0 +1,8 @@
+2024-10-21 20:46:19,599 INFO    StreamThr :1818460 [internal.py:wandb_internal():85] W&B internal server running at pid: 1818460, started at: 2024-10-21 20:46:19.597946
+2024-10-21 20:46:19,601 DEBUG   HandlerThread:1818460 [handler.py:handle_request():158] handle_request: status
+2024-10-21 20:46:19,602 INFO    WriterThread:1818460 [datastore.py:open_for_write():87] open: /home/zwling/code/OOD-Libraries/wandb/run-20241021_204619-mlo0rsz4/run-mlo0rsz4.wandb
+2024-10-21 20:46:19,604 DEBUG   SenderThread:1818460 [sender.py:send():391] send: header
+2024-10-21 20:46:19,605 DEBUG   SenderThread:1818460 [sender.py:send():391] send: run
+2024-10-21 20:46:24,606 DEBUG   HandlerThread:1818460 [handler.py:handle_request():158] handle_request: keepalive
+2024-10-21 20:46:29,607 DEBUG   HandlerThread:1818460 [handler.py:handle_request():158] handle_request: keepalive
+2024-10-21 20:46:31,604 INFO    MainThread:1818460 [internal.py:handle_exit():75] Internal process exited

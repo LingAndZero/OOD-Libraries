@@ -1,0 +1,38 @@
+wandb_version: 1
+
+architecture:
+  desc: null
+  value: SWIN
+ind_dataset:
+  desc: null
+  value: ImageNet
+ood_dataset:
+  desc: null
+  value: SUN
+method:
+  desc: null
+  value: OptFS
+_wandb:
+  desc: null
+  value:
+    python_version: 3.10.14
+    cli_version: 0.17.8
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1729514637
+    t:
+      1:
+      - 1
+      - 5
+      - 41
+      - 53
+      - 55
+      3:
+      - 16
+      - 23
+      4: 3.10.14
+      5: 0.17.8
+      8:
+      - 5
+      13: linux-x86_64

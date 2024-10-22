@@ -109,7 +109,10 @@ class ResNet(nn.Module):
         out = self.layer3(out)
         out = self.layer4(out)
         out = F.avg_pool2d(out, 4)
-        return out
+        out = out.view(out.size(0), -1)
+        feature = out
+        out = self.linear(out)
+        return out, feature
 
     def forward_noise(self, x, noise):
         out = F.relu(self.bn1(self.conv1(x + noise)))

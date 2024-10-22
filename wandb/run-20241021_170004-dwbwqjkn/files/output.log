@@ -1,0 +1,14 @@
+
+
+
+
+
+
+
+ 15%|██████████                                                        | 15/98 [00:22<02:01,  1.47s/it]
+Traceback (most recent call last):
+  File "/home/zwling/code/OOD-Libraries/ood_eval.py", line 90, in <module>
+    ind_scores = gen.eval(ind_loader)
+  File "/home/zwling/code/OOD-Libraries/ood_methods/GEN.py", line 29, in eval
+    smax = (F.softmax(output, dim=1)).data.cpu().numpy()
+KeyboardInterrupt

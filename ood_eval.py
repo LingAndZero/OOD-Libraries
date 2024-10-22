@@ -4,6 +4,7 @@ import torch.nn as nn
 import argparse
 import os
 import numpy as np
+# import wandb
 
 from utils.utils import fix_random_seed
 from utils.dataset import get_dataset
@@ -15,14 +16,14 @@ def get_eval_options():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--ind_dataset", type=str, default="ImageNet")
-    parser.add_argument("--ood_dataset", type=str, default="iNat")
-    parser.add_argument("--model", type=str, default="ResNet")
+    parser.add_argument("--ood_dataset", type=str, default="Textures")    
+    parser.add_argument("--model", type=str, default="ConvNext")
     parser.add_argument("--gpu", type=int, default=0)
     parser.add_argument('--num_classes', type=int, default=1000)
 
     parser.add_argument("--random_seed", type=int, default=0)
-    parser.add_argument("--bs", type=int, default=128)
-    parser.add_argument("--OOD_method", type=str, default="Distil")
+    parser.add_argument("--bs", type=int, default=512)
+    parser.add_argument("--OOD_method", type=str, default="OptFS")
 
     args = parser.parse_args()
     return args
@@ -32,6 +33,16 @@ if __name__ == '__main__':
     args = get_eval_options()
     fix_random_seed(args.random_seed)
     device = torch.device('cuda:{}'.format(args.gpu) if torch.cuda.is_available() and args.gpu != -1 else 'cpu')
+
+    # wandb.init(
+    #     project="ood-record",
+    #     config={
+    #         "architecture": args.model,
+    #         "ind_dataset": args.ind_dataset,
+    #         "ood_dataset": args.ood_dataset,
+    #         "method": args.OOD_method,
+    #     }
+    # )
 
     _, ind_dataset = get_dataset(args.ind_dataset)
     _, ood_dataset = get_dataset(args.ood_dataset)
@@ -71,6 +82,14 @@ if __name__ == '__main__':
         ind_scores = energy.eval(ind_loader)
         ood_scores = energy.eval(ood_loader)
 
+    elif args.OOD_method == "GEN":
+        from ood_methods.GEN import GEN
+        gen = GEN(model, device)
+
+        # step 1: get gen score
+        ind_scores = gen.eval(ind_loader)
+        ood_scores = gen.eval(ood_loader)
+
     elif args.OOD_method == "Mahalanobis":
         from ood_methods.Mahalanobis import mahalanobis_eval
         ind_scores = mahalanobis_eval(model, ind_loader)
@@ -81,9 +100,18 @@ if __name__ == '__main__':
         react = ReAct(model, device)
 
         # step 1: get activation threshold
-        train_data, _ = get_dataset(args.ind_dataset)
-        train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)
-        threshold = react.get_threshold(train_loader)
+        # load training threshold
+        file_threshold = "result/threshold/{}/{}/train_threshold.csv".format(args.ind_dataset, args.model)
+
+        if os.path.exists(file_threshold):
+            threshold = torch.from_numpy(np.genfromtxt(file_threshold)).to(device)
+            print("load train threshold")
+        else:
+            train_data, _ = get_dataset(args.ind_dataset)
+            train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)
+            threshold = react.get_threshold(train_loader)
+            np.savetxt(file_threshold, np.array([threshold]))
+            print("save train threshold")
 
         # step 2: get react score
         ind_scores = react.eval(ind_loader, threshold)
@@ -118,40 +146,57 @@ if __name__ == '__main__':
         ind_scores = ash.eval(ind_loader)
         ood_scores = ash.eval(ood_loader)
 
-    elif args.OOD_method == "OE":
-        from ood_methods.OE import OE
-        oe = OE(model, device)
+    elif args.OOD_method == "OptFS":
+        from ood_methods.OptFS import OptFS
+        optfs = OptFS(model, device)
+        
+        # load training features
+        stored = "result/features/common/{}/{}/train_info.npz".format(args.ind_dataset, args.model)
+        
+        if os.path.isfile(stored):
+            train_info = np.load(stored)
+            features = train_info['feature']
+            preds = train_info['pred']
+            print("load train features")
 
-        # step 1: fine-tuning the model
-        ID_data, _ = get_dataset(args.ind_dataset)
-        ID_loader = torch.utils.data.DataLoader(ID_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)
-        OOD_data, _ = get_dataset(args.ind_dataset)
-        OOD_loader = torch.utils.data.DataLoader(OOD_data, batch_size=512, pin_memory=True, shuffle=False, num_workers=8)  
-        oe.fineTuning(ID_loader, OOD_loader)
+        else:
+            train_data, _ = get_dataset(args.ind_dataset)
+            train_loader = torch.utils.data.DataLoader(train_data, batch_size=512, pin_memory=True, shuffle=False, num_workers=8)
+            features, preds = optfs.get_features(train_loader, args.num_classes)
 
-        # step 2: get oe score
-        ind_scores = oe.eval(ind_loader)
-        ood_scores = oe.eval(ood_loader)
+            np.savez(stored, feature=features, pred=preds)
+            print("save train features")
+    
+        theta = optfs.get_optimal_shaping(features, preds)
+
+        ind_scores = optfs.eval(ind_loader, theta)
+        ood_scores = optfs.eval(ood_loader, theta)
 
 
-    elif args.OOD_method == "COS":
-        from ood_methods.COS import COS
-        cos = COS(model, device)
+    elif args.OOD_method == "DIST":
+        from ood_methods.DIST import DIST
+        import pickle
+        dist = DIST(model, device)
 
         # load training features
-        file_features = "result/features/{}_{}_in.csv".format(args.ind_dataset, args.model)
+        stored = "result/features/{}/{}/train_info.npz".format(args.ind_dataset, args.model)
 
-        if os.path.exists(file_features):
-            features = torch.from_numpy(np.genfromtxt(file_features))
+        if os.path.isfile(stored):
+            train_info = np.load(stored)
+            features = train_info['feature']
             print("load train features")
         else:
             train_data, _ = get_dataset(args.ind_dataset)
             train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=False, num_workers=8)
-            features = torch.from_numpy(cos.get_features(train_loader, args.num_classes))
-            np.savetxt(file_features, features)
+            features = dist.get_features(train_loader, args.num_classes)
+            # np.savez(stored, feature=features, pred=preds)
+            # print("save train features")
         
-        ind_scores = cos.eval(ind_loader, features)
-        ood_scores = cos.eval(ood_loader, features)
+        theta = dist.get_optimal_shaping(features)
+        mean_feature = DIST.get_stats(features)
+
+        ind_scores = dist.eval(ind_loader, mean_feature)
+        ood_scores = dist.eval(ood_loader, mean_feature)
 
 
     elif args.OOD_method == "Distil":
@@ -173,26 +218,13 @@ if __name__ == '__main__':
                               
         ind_scores = distil.eval(ind_loader, logits)
         ood_scores = distil.eval(ood_loader, logits)
-
-        # file_logits = "result/logits/{}_{}_in.csv".format(args.ind_dataset, args.model)
-
-        # # load training logits
-        # if os.path.exists(file_logits):
-        #     train_logits = torch.from_numpy(np.genfromtxt(file_logits))
-        #     print("load train_logits")
-        # else:
-        #     train_data, _ = get_dataset(args.ind_dataset)
-        #     train_loader = torch.utils.data.DataLoader(train_data, batch_size=1024, pin_memory=True, shuffle=True, num_workers=8)
-        #     train_logits = get_logits(model, train_loader, args, device)
-        #     train_logits = torch.from_numpy(train_logits)
-        #     np.savetxt(file_logits, train_logits)
         
         # file_path_in = "result/{}_{}_{}_in.csv".format(args.OOD_method, args.ind_dataset, args.model)
         # if os.path.exists(file_path_in):
         #    ind_scores = np.genfromtxt(file_path_in, delimiter=' ')
         #    print("load ind-scores")
         # else:
-        #    ind_scores = distil_eval(model, ind_loader, train_logits, args, device)
+        #    ind_scores = distil.eval(ind_loader, logits)
         #    np.savetxt(file_path_in, ind_scores, delimiter=' ')
 
         # file_path_out = "result/{}_{}_{}_{}_out.csv".format(args.OOD_method, args.ind_dataset, args.ood_dataset, args.model)
@@ -200,7 +232,7 @@ if __name__ == '__main__':
         #     ood_scores = np.genfromtxt(file_path_out, delimiter=' ')
         #     print("load ood-scores")
         # else:
-        #     ood_scores = distil_eval(model, ood_loader, train_logits, args, device)
+        #     ood_scores = distil.eval(ood_loader, logits)
         #     np.savetxt(file_path_out, ood_scores, delimiter=' ')
 
         # ind_scores = distil_eval(model, ind_loader, train_logits, args, device)
@@ -214,6 +246,7 @@ if __name__ == '__main__':
 
     auroc, aupr, fpr = cal_metric(labels, scores)
 
+    # wandb.log({"AUROC": auroc, "FPR": fpr})
     print("{:10} {}".format("AUROC:", auroc))
     print("{:10} {}".format("FPR:", fpr))
 

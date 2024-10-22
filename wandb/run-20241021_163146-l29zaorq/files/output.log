@@ -1,0 +1,140 @@
+
+load train features
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+100%|████████████████████████████████████████████████████████████████| 100/100 [05:33<00:00,  3.33s/it]
+
+  4%|██▋                                                                | 2/49 [00:23<09:17, 11.86s/it]
+Traceback (most recent call last):
+  File "/home/zwling/code/OOD-Libraries/ood_eval.py", line 172, in <module>
+    ind_scores = optfs.eval(ind_loader, theta)
+  File "/home/zwling/code/OOD-Libraries/ood_methods/OptFS.py", line 71, in eval
+    _, feature = self.model.feature(images)
+  File "/home/zwling/code/OOD-Libraries/models/ResNet.py", line 159, in feature
+    x = self.features(x)
+  File "/home/zwling/code/OOD-Libraries/models/ResNet.py", line 148, in features
+    x = self.layer4(self.layer3(self.layer2(self.layer1(x))))
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/container.py", line 219, in forward
+    input = module(input)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zwling/code/OOD-Libraries/models/ResNet.py", line 96, in forward
+    residual = self.downsample(x)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/container.py", line 219, in forward
+    input = module(input)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/batchnorm.py", line 176, in forward
+    return F.batch_norm(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/functional.py", line 2512, in batch_norm
+    return torch.batch_norm(
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.06 GiB. GPU 1 has a total capacity of 23.64 GiB of which 1.37 GiB is free. Process 998402 has 1.83 GiB memory in use. Process 1491010 has 6.97 GiB memory in use. Including non-PyTorch memory, this process has 13.39 GiB memory in use. Of the allocated memory 7.59 GiB is allocated by PyTorch, and 5.35 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

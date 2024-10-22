@@ -1,0 +1,36 @@
+2024-10-21 16:07:36,310 INFO    MainThread:1487722 [wandb_setup.py:_flush():77] Current SDK version is 0.17.8
+2024-10-21 16:07:36,310 INFO    MainThread:1487722 [wandb_setup.py:_flush():77] Configure stats pid to 1487722
+2024-10-21 16:07:36,310 INFO    MainThread:1487722 [wandb_setup.py:_flush():77] Loading settings from /home/zwling/.config/wandb/settings
+2024-10-21 16:07:36,310 INFO    MainThread:1487722 [wandb_setup.py:_flush():77] Loading settings from /home/zwling/code/OOD-Libraries/wandb/settings
+2024-10-21 16:07:36,310 INFO    MainThread:1487722 [wandb_setup.py:_flush():77] Loading settings from environment variables: {}
+2024-10-21 16:07:36,310 INFO    MainThread:1487722 [wandb_setup.py:_flush():77] Applying setup settings: {'_disable_service': False}
+2024-10-21 16:07:36,310 INFO    MainThread:1487722 [wandb_setup.py:_flush():77] Inferring run settings from compute environment: {'program_relpath': 'ood_eval.py', 'program_abspath': '/home/zwling/code/OOD-Libraries/ood_eval.py', 'program': '/home/zwling/code/OOD-Libraries/ood_eval.py'}
+2024-10-21 16:07:36,310 INFO    MainThread:1487722 [wandb_setup.py:_flush():77] Applying login settings: {}
+2024-10-21 16:07:36,310 INFO    MainThread:1487722 [wandb_init.py:_log_setup():524] Logging user logs to /home/zwling/code/OOD-Libraries/wandb/run-20241021_160736-p7xwrlxk/logs/debug.log
+2024-10-21 16:07:36,311 INFO    MainThread:1487722 [wandb_init.py:_log_setup():525] Logging internal logs to /home/zwling/code/OOD-Libraries/wandb/run-20241021_160736-p7xwrlxk/logs/debug-internal.log
+2024-10-21 16:07:36,311 INFO    MainThread:1487722 [wandb_init.py:init():607] calling init triggers
+2024-10-21 16:07:36,311 INFO    MainThread:1487722 [wandb_init.py:init():614] wandb.init called with sweep_config: {}
+config: {'architecture': 'VIT', 'ind_dataset': 'ImageNet', 'ood_dataset': 'ImageNet_O', 'method': 'GEN'}
+2024-10-21 16:07:36,311 INFO    MainThread:1487722 [wandb_init.py:init():657] starting backend
+2024-10-21 16:07:36,311 INFO    MainThread:1487722 [wandb_init.py:init():661] setting up manager
+2024-10-21 16:07:36,312 INFO    MainThread:1487722 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-10-21 16:07:36,314 INFO    MainThread:1487722 [wandb_init.py:init():669] backend started and connected
+2024-10-21 16:07:36,316 INFO    MainThread:1487722 [wandb_init.py:init():767] updated telemetry
+2024-10-21 16:07:36,322 INFO    MainThread:1487722 [wandb_init.py:init():800] communicating run to backend with 90.0 second timeout
+2024-10-21 16:08:32,839 WARNING MainThread:1487722 [wandb_init.py:init():1232] interrupted
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/wandb_init.py", line 1228, in init
+    return wi.init()
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/wandb_init.py", line 803, in init
+    result = run_init_handle.wait(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/lib/mailbox.py", line 283, in wait
+    found, abandoned = self._slot._get_and_clear(timeout=wait_timeout)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/lib/mailbox.py", line 130, in _get_and_clear
+    if self._wait(timeout=timeout):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/lib/mailbox.py", line 126, in _wait
+    return self._event.wait(timeout=timeout)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/threading.py", line 607, in wait
+    signaled = self._cond.wait(timeout)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/threading.py", line 324, in wait
+    gotit = waiter.acquire(True, timeout)
+KeyboardInterrupt

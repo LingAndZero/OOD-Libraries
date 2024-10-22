@@ -17,16 +17,19 @@ class VGG_CIFAR(nn.Module):
         self.features = self._make_layers(cfg[vgg_name])
         self.classifier = nn.Linear(512, 10)
 
-    def feature(self, x):
-        out = self.features(x)
-        return out
-
     def forward(self, x):
         out = self.features(x)
         out = out.view(out.size(0), -1)
         out = self.classifier(out)
         return out
 
+    def feature(self, x):
+        out = self.features(x)
+        out = out.view(out.size(0), -1)
+        feature = out
+        out = self.classifier(out)
+        return out, feature
+    
     def forward_noise(self, x, noise):
         out = self.features(x + noise)
         out = out.view(out.size(0), -1)

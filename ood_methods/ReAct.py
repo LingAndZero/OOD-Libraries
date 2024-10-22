@@ -23,10 +23,10 @@ class ReAct:
 
         with torch.no_grad():
             for (images, _) in tqdm(train_loader):
-                images = images.cuda()
-                output = self.model.feature(images).data.cpu().numpy()
+                images = images.to(self.device)
+                _, feature = self.model.feature(images)
 
-                result.append(output)
+                result.append(feature.data.cpu().numpy())
 
         threshold = np.percentile(np.concatenate(result), self.p)
 
@@ -39,10 +39,9 @@ class ReAct:
         with torch.no_grad():
             for (images, _) in tqdm(data_loader):
                 images = images.to(self.device)
-                output = self.model.feature(images)
-                output = output.view(output.size(0), -1)
-                output = output.clip(max=threshold)
-                output = self.model.linear(output)
+                _, feature = self.model.feature(images)
+                feature = feature.clip(max=threshold)
+                output = self.model.fc(feature)
 
                 output = self.T * torch.logsumexp(output / self.T, dim=1).data.cpu().numpy()
 

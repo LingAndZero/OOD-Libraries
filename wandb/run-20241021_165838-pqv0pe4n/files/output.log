@@ -1,0 +1,57 @@
+Downloading: "https://download.pytorch.org/models/swin_b-68c6b09e.pth" to /home/zwling/.cache/torch/hub/checkpoints/swin_b-68c6b09e.pth
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+100%|███████████████████████████████████████████████████████████████| 335M/335M [00:28<00:00, 12.3MB/s]
+
+
+  4%|██▋                                                                | 2/49 [00:24<09:35, 12.23s/it]
+Traceback (most recent call last):
+  File "/home/zwling/code/OOD-Libraries/ood_eval.py", line 90, in <module>
+    ind_scores = gen.eval(ind_loader)
+  File "/home/zwling/code/OOD-Libraries/ood_methods/GEN.py", line 28, in eval
+    output = self.model(images)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torchvision/models/swin_transformer.py", line 608, in forward
+    x = self.features(x)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/container.py", line 219, in forward
+    input = module(input)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/container.py", line 219, in forward
+    input = module(input)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torchvision/models/swin_transformer.py", line 453, in forward
+    x = x + self.stochastic_depth(self.attn(self.norm1(x)))
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torchvision/models/swin_transformer.py", line 299, in forward
+    return shifted_window_attention(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torchvision/models/swin_transformer.py", line 191, in shifted_window_attention
+    attn = attn + relative_position_bias
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.35 GiB. GPU 1 has a total capacity of 23.64 GiB of which 1.92 GiB is free. Process 998402 has 1.83 GiB memory in use. Including non-PyTorch memory, this process has 19.87 GiB memory in use. Of the allocated memory 13.98 GiB is allocated by PyTorch, and 5.44 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

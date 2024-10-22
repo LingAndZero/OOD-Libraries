@@ -1,0 +1,26 @@
+2024-10-21 16:31:46,799 INFO    MainThread:1512130 [wandb_setup.py:_flush():77] Current SDK version is 0.17.8
+2024-10-21 16:31:46,799 INFO    MainThread:1512130 [wandb_setup.py:_flush():77] Configure stats pid to 1512130
+2024-10-21 16:31:46,800 INFO    MainThread:1512130 [wandb_setup.py:_flush():77] Loading settings from /home/zwling/.config/wandb/settings
+2024-10-21 16:31:46,800 INFO    MainThread:1512130 [wandb_setup.py:_flush():77] Loading settings from /home/zwling/code/OOD-Libraries/wandb/settings
+2024-10-21 16:31:46,800 INFO    MainThread:1512130 [wandb_setup.py:_flush():77] Loading settings from environment variables: {}
+2024-10-21 16:31:46,800 INFO    MainThread:1512130 [wandb_setup.py:_flush():77] Applying setup settings: {'_disable_service': False}
+2024-10-21 16:31:46,800 INFO    MainThread:1512130 [wandb_setup.py:_flush():77] Inferring run settings from compute environment: {'program_relpath': 'ood_eval.py', 'program_abspath': '/home/zwling/code/OOD-Libraries/ood_eval.py', 'program': '/home/zwling/code/OOD-Libraries/ood_eval.py'}
+2024-10-21 16:31:46,800 INFO    MainThread:1512130 [wandb_setup.py:_flush():77] Applying login settings: {}
+2024-10-21 16:31:46,800 INFO    MainThread:1512130 [wandb_init.py:_log_setup():524] Logging user logs to /home/zwling/code/OOD-Libraries/wandb/run-20241021_163146-l29zaorq/logs/debug.log
+2024-10-21 16:31:46,800 INFO    MainThread:1512130 [wandb_init.py:_log_setup():525] Logging internal logs to /home/zwling/code/OOD-Libraries/wandb/run-20241021_163146-l29zaorq/logs/debug-internal.log
+2024-10-21 16:31:46,800 INFO    MainThread:1512130 [wandb_init.py:init():607] calling init triggers
+2024-10-21 16:31:46,800 INFO    MainThread:1512130 [wandb_init.py:init():614] wandb.init called with sweep_config: {}
+config: {'architecture': 'ResNet', 'ind_dataset': 'ImageNet', 'ood_dataset': 'iNat', 'method': 'OptFS'}
+2024-10-21 16:31:46,800 INFO    MainThread:1512130 [wandb_init.py:init():657] starting backend
+2024-10-21 16:31:46,800 INFO    MainThread:1512130 [wandb_init.py:init():661] setting up manager
+2024-10-21 16:31:46,801 INFO    MainThread:1512130 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-10-21 16:31:46,802 INFO    MainThread:1512130 [wandb_init.py:init():669] backend started and connected
+2024-10-21 16:31:46,804 INFO    MainThread:1512130 [wandb_init.py:init():767] updated telemetry
+2024-10-21 16:31:46,809 INFO    MainThread:1512130 [wandb_init.py:init():800] communicating run to backend with 90.0 second timeout
+2024-10-21 16:31:47,774 INFO    MainThread:1512130 [wandb_init.py:init():851] starting run threads in backend
+2024-10-21 16:31:50,566 INFO    MainThread:1512130 [wandb_run.py:_console_start():2463] atexit reg
+2024-10-21 16:31:50,566 INFO    MainThread:1512130 [wandb_run.py:_redirect():2309] redirect: wrap_raw
+2024-10-21 16:31:50,567 INFO    MainThread:1512130 [wandb_run.py:_redirect():2374] Wrapping output streams.
+2024-10-21 16:31:50,567 INFO    MainThread:1512130 [wandb_run.py:_redirect():2399] Redirects installed.
+2024-10-21 16:31:50,573 INFO    MainThread:1512130 [wandb_init.py:init():894] run started, returning control to user process
+2024-10-21 16:38:59,507 WARNING MsgRouterThr:1512130 [router.py:message_loop():77] message_loop has been closed

@@ -89,6 +89,16 @@ def get_dataset(dataset, mode="test"):
         train_dataset = None
         test_dataset = datasets.ImageFolder(root='./data/dtd/images', transform=transform)
     
+    elif dataset == "places365":
+        size = 32
+        transform = transforms.Compose([
+            transforms.Resize([size,size]), 
+            transforms.ToTensor(),
+            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+        ])
+        train_dataset = None
+        test_dataset = datasets.ImageFolder(root='./data/Places', transform=transform)
+
     elif dataset == "iSUN":
         transform = transforms.Compose([
             transforms.ToTensor(),
@@ -177,5 +187,44 @@ def get_dataset(dataset, mode="test"):
         train_dataset = None
         test_dataset = datasets.ImageFolder(root='./data/dtd/images', transform=transform_test_largescale)
 
+    elif dataset == "NINCO":
+        transform_test_largescale = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        ])
+        train_dataset = None
+        test_dataset = ImageFolderLMDB(db_path='./data/ninco.lmdb', transform=transform_test_largescale)
+
+    elif dataset == "SSB_hard":
+        transform_test_largescale = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        ])
+        train_dataset = None
+        test_dataset = ImageFolderLMDB(db_path='./data/ssb_hard.lmdb', transform=transform_test_largescale)
+
+    elif dataset == "OpenImage_O":
+        transform_test_largescale = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        ])
+        train_dataset = None
+        test_dataset = ImageFolderLMDB(db_path='./data/openimage_o.lmdb', transform=transform_test_largescale)
+
+    elif dataset == "ImageNet_O":
+        transform_test_largescale = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        ])
+        train_dataset = None
+        test_dataset = ImageFolderLMDB(db_path='./data/imagenet-o.lmdb', transform=transform_test_largescale)
 
     return train_dataset, test_dataset

@@ -38,7 +38,10 @@ class VGG(nn.Module):
     
     def feature(self, x):
         x = self.features(x)
-        return x
+        x = x.view(x.size(0), -1)
+        feature = x 
+        x = self.classifier(x)
+        return x, feature
 
     def forward(self, x):
         x = self.features(x)

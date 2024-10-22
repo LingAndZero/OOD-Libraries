@@ -1,0 +1,245 @@
+2024-10-21 20:23:21,757 INFO    StreamThr :1777632 [internal.py:wandb_internal():85] W&B internal server running at pid: 1777632, started at: 2024-10-21 20:23:21.757289
+2024-10-21 20:23:21,759 DEBUG   HandlerThread:1777632 [handler.py:handle_request():158] handle_request: status
+2024-10-21 20:23:21,760 INFO    WriterThread:1777632 [datastore.py:open_for_write():87] open: /home/zwling/code/OOD-Libraries/wandb/run-20241021_202321-lbsqsxvx/run-lbsqsxvx.wandb
+2024-10-21 20:23:21,761 DEBUG   SenderThread:1777632 [sender.py:send():391] send: header
+2024-10-21 20:23:21,763 DEBUG   SenderThread:1777632 [sender.py:send():391] send: run
+2024-10-21 20:23:26,765 DEBUG   HandlerThread:1777632 [handler.py:handle_request():158] handle_request: keepalive
+2024-10-21 20:23:31,766 DEBUG   HandlerThread:1777632 [handler.py:handle_request():158] handle_request: keepalive
+2024-10-21 20:23:36,767 DEBUG   HandlerThread:1777632 [handler.py:handle_request():158] handle_request: keepalive
+2024-10-21 20:23:41,769 DEBUG   HandlerThread:1777632 [handler.py:handle_request():158] handle_request: keepalive
+2024-10-21 20:23:46,771 DEBUG   HandlerThread:1777632 [handler.py:handle_request():158] handle_request: keepalive
+2024-10-21 20:23:51,772 DEBUG   HandlerThread:1777632 [handler.py:handle_request():158] handle_request: keepalive
+2024-10-21 20:23:56,773 DEBUG   HandlerThread:1777632 [handler.py:handle_request():158] handle_request: keepalive
+2024-10-21 20:24:01,775 DEBUG   HandlerThread:1777632 [handler.py:handle_request():158] handle_request: keepalive
+2024-10-21 20:24:06,777 DEBUG   HandlerThread:1777632 [handler.py:handle_request():158] handle_request: keepalive
+2024-10-21 20:24:11,778 DEBUG   HandlerThread:1777632 [handler.py:handle_request():158] handle_request: keepalive
+2024-10-21 20:24:16,779 DEBUG   HandlerThread:1777632 [handler.py:handle_request():158] handle_request: keepalive
+2024-10-21 20:24:21,781 DEBUG   HandlerThread:1777632 [handler.py:handle_request():158] handle_request: keepalive
+2024-10-21 20:24:23,708 DEBUG   HandlerThread:1777632 [handler.py:handle_request():158] handle_request: shutdown
+2024-10-21 20:24:23,708 INFO    HandlerThread:1777632 [handler.py:finish():884] shutting down handler
+2024-10-21 20:24:23,772 INFO    WriterThread:1777632 [datastore.py:close():296] close: /home/zwling/code/OOD-Libraries/wandb/run-20241021_202321-lbsqsxvx/run-lbsqsxvx.wandb
+2024-10-21 20:24:25,009 INFO    SenderThread:1777632 [retry.py:__call__():172] Retry attempt failed:
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connection.py", line 196, in _new_conn
+    sock = connection.create_connection(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+TimeoutError: timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 789, in urlopen
+    response = self._make_request(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 490, in _make_request
+    raise new_e
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 466, in _make_request
+    self._validate_conn(conn)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 1095, in _validate_conn
+    conn.connect()
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connection.py", line 615, in connect
+    self.sock = sock = self._new_conn()
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connection.py", line 205, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<urllib3.connection.HTTPSConnection object at 0x7fd77cfdee00>, 'Connection to api.wandb.ai timed out. (connect timeout=20)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 843, in urlopen
+    retries = retries.increment(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.wandb.ai', port=443): Max retries exceeded with url: /graphql (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fd77cfdee00>, 'Connection to api.wandb.ai timed out. (connect timeout=20)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/internal/internal_api.py", line 345, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/lib/gql_request.py", line 58, in execute
+    request = self.session.post(self.url, **post_args)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/sessions.py", line 637, in post
+    return self.request("POST", url, data=data, json=json, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/adapters.py", line 688, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='api.wandb.ai', port=443): Max retries exceeded with url: /graphql (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fd77cfdee00>, 'Connection to api.wandb.ai timed out. (connect timeout=20)'))
+2024-10-21 20:48:06,304 INFO    SenderThread:1777632 [retry.py:__call__():172] Retry attempt failed:
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connection.py", line 196, in _new_conn
+    sock = connection.create_connection(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+TimeoutError: timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 789, in urlopen
+    response = self._make_request(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 490, in _make_request
+    raise new_e
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 466, in _make_request
+    self._validate_conn(conn)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 1095, in _validate_conn
+    conn.connect()
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connection.py", line 615, in connect
+    self.sock = sock = self._new_conn()
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connection.py", line 205, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<urllib3.connection.HTTPSConnection object at 0x7fd77c709420>, 'Connection to api.wandb.ai timed out. (connect timeout=20)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 843, in urlopen
+    retries = retries.increment(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.wandb.ai', port=443): Max retries exceeded with url: /graphql (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fd77c709420>, 'Connection to api.wandb.ai timed out. (connect timeout=20)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/internal/internal_api.py", line 345, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/lib/gql_request.py", line 58, in execute
+    request = self.session.post(self.url, **post_args)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/sessions.py", line 637, in post
+    return self.request("POST", url, data=data, json=json, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/adapters.py", line 688, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='api.wandb.ai', port=443): Max retries exceeded with url: /graphql (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fd77c709420>, 'Connection to api.wandb.ai timed out. (connect timeout=20)'))
+2024-10-21 20:48:06,305 ERROR   SenderThread:1777632 [sender.py:send_run():1021] [Errno 5] Input/output error
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connection.py", line 196, in _new_conn
+    sock = connection.create_connection(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+TimeoutError: timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 789, in urlopen
+    response = self._make_request(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 490, in _make_request
+    raise new_e
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 466, in _make_request
+    self._validate_conn(conn)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 1095, in _validate_conn
+    conn.connect()
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connection.py", line 615, in connect
+    self.sock = sock = self._new_conn()
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connection.py", line 205, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<urllib3.connection.HTTPSConnection object at 0x7fd77c709420>, 'Connection to api.wandb.ai timed out. (connect timeout=20)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/connectionpool.py", line 843, in urlopen
+    retries = retries.increment(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.wandb.ai', port=443): Max retries exceeded with url: /graphql (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fd77c709420>, 'Connection to api.wandb.ai timed out. (connect timeout=20)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/internal/internal_api.py", line 345, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/lib/gql_request.py", line 58, in execute
+    request = self.session.post(self.url, **post_args)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/sessions.py", line 637, in post
+    return self.request("POST", url, data=data, json=json, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/requests/adapters.py", line 688, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='api.wandb.ai', port=443): Max retries exceeded with url: /graphql (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fd77c709420>, 'Connection to api.wandb.ai timed out. (connect timeout=20)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/apis/normalize.py", line 41, in wrapper
+    return func(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/internal/internal_api.py", line 2224, in upsert_run
+    response = self.gql(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/internal/internal_api.py", line 317, in gql
+    ret = self._retry_gql(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/lib/retry.py", line 183, in __call__
+    wandb.termlog(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/errors/term.py", line 42, in termlog
+    _log(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/errors/term.py", line 103, in _log
+    click.echo(line, file=sys.stderr, nl=newline)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/click/utils.py", line 318, in echo
+    file.write(out)  # type: ignore
+OSError: [Errno 5] Input/output error
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/internal/sender.py", line 1019, in send_run
+    server_run = self._init_run(run, config_value_dict)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/internal/sender.py", line 1091, in _init_run
+    server_run, inserted, server_messages = self._api.upsert_run(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/apis/normalize.py", line 87, in wrapper
+    raise CommError(message, err).with_traceback(sys.exc_info()[2])
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/apis/normalize.py", line 41, in wrapper
+    return func(*args, **kwargs)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/internal/internal_api.py", line 2224, in upsert_run
+    response = self.gql(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/internal/internal_api.py", line 317, in gql
+    ret = self._retry_gql(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/sdk/lib/retry.py", line 183, in __call__
+    wandb.termlog(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/errors/term.py", line 42, in termlog
+    _log(
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/wandb/errors/term.py", line 103, in _log
+    click.echo(line, file=sys.stderr, nl=newline)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/click/utils.py", line 318, in echo
+    file.write(out)  # type: ignore
+wandb.errors.CommError: [Errno 5] Input/output error
+2024-10-21 20:48:06,316 INFO    SenderThread:1777632 [sender.py:finish():1631] shutting down sender

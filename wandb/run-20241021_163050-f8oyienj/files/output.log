@@ -1,0 +1,12 @@
+
+load train features
+Traceback (most recent call last):
+  File "/home/zwling/code/OOD-Libraries/ood_eval.py", line 170, in <module>
+    theta = optfs.get_optimal_shaping(features, preds)
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/zwling/code/OOD-Libraries/ood_methods/OptFS.py", line 43, in get_optimal_shaping
+    w = self.model.heads[-1].weight
+  File "/home/zwling/.conda/envs/lzw/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1729, in __getattr__
+    raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
+AttributeError: 'ResNet' object has no attribute 'heads'

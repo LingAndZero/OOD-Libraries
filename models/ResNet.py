@@ -158,7 +158,10 @@ class AbstractResNet(nn.Module):
     def feature(self, x):
         x = self.features(x)
         x = self.avgpool(x)
-        return x
+        x = x.view(x.size(0), -1)
+        feature = x
+        x = self.fc(x)
+        return x, feature
     
     # for Distil
     def forward_noise(self, x, noise):
@@ -169,9 +172,11 @@ class AbstractResNet(nn.Module):
         return x
     
     def feature_noise(self, x, noise):
-        x = self.features(x + noise)
+        x = self.features(x)
+        x = x + noise
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
+        x = self.fc(x)
         return x
 
     def load_state_dict(self, state_dict, strict=True):

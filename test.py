@@ -51,8 +51,8 @@ download_id_dict = {
 
 def download_dataset(dataset):
 
-    store_path = './data/' + dataset
-    gdown.download(id=download_id_dict[dataset], output=store_path)
+    store_path = './data/' + dataset + '.zip'
+    gdown.download(id=download_id_dict[dataset], output=store_path, proxy="http://10.82.60.184:40903")
 
 
-download_dataset('bimcv')
+download_dataset('openimage_o')
